@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Via Brand OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== COMMAND PALETTE (⌘K) ========== -->
+<div id="command-palette" class="cmd-overlay" style="display:none">
+  <div class="cmd-backdrop"></div>
+  <div class="cmd-modal">
+    <div class="cmd-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="cmd-input" placeholder="Search templates, cities, assets... or ask AI anything" autocomplete="off">
+      <kbd>ESC</kbd>
+    </div>
+    <div id="cmd-results" class="cmd-results">
+      <div class="cmd-section">
+        <div class="cmd-section-label">Quick Actions</div>
+        <div class="cmd-item" data-action="navigate" data-target="via-templates-av">
+          <span class="cmd-icon">&#128196;</span>
+          <div class="cmd-item-text">
+            <span class="cmd-item-title">AV Bus Stop Poster Template</span>
+            <span class="cmd-item-path">Via &rsaquo; Templates &rsaquo; Autonomous Vehicles</span>
+          </div>
+          <span class="cmd-badge via">Via</span>
+        </div>
+        <div class="cmd-item" data-action="navigate" data-target="via-city-detail">
+          <span class="cmd-icon">&#127961;</span>
+          <div class="cmd-item-text">
+            <span class="cmd-item-title">Chandler Flex &mdash; City Brand Kit</span>
+            <span class="cmd-item-path">Via &rsaquo; City Manager &rsaquo; Chandler, AZ</span>
+          </div>
+          <span class="cmd-badge via">Via</span>
+        </div>
+        <div class="cmd-item" data-action="navigate" data-target="cm-home">
+          <span class="cmd-icon">&#127760;</span>
+          <div class="cmd-item-text">
+            <span class="cmd-item-title">London City Icon Set</span>
+            <span class="cmd-item-path">Citymapper &rsaquo; City Manager &rsaquo; London</span>
+          </div>
+          <span class="cmd-badge cm">Citymapper</span>
+        </div>
+      </div>
+      <div class="cmd-section">
+        <div class="cmd-section-label">Recent</div>
+        <div class="cmd-item" data-action="navigate" data-target="via-av-poster">
+          <span class="cmd-icon">&#128444;</span>
+          <div class="cmd-item-text">
+            <span class="cmd-item-title">Denver AV Launch &mdash; Bus Stop Poster</span>
+            <span class="cmd-item-path">Via &rsaquo; AV &rsaquo; Launch Campaign &rsaquo; Poster A0</span>
+          </div>
+          <span class="cmd-badge via">Via</span>
+        </div>
+        <div class="cmd-item" data-action="navigate" data-target="via-templates">
+          <span class="cmd-icon">&#128202;</span>
+          <div class="cmd-item-text">
+            <span class="cmd-item-title">Q1 2026 Earnings Deck</span>
+            <span class="cmd-item-path">Via &rsaquo; Templates &rsaquo; Investor Relations</span>
+          </div>
+          <span class="cmd-badge via">Via</span>
+        </div>
+      </div>
+    </div>
+    <!-- AI Search Results (shown when typing) -->
+    <div id="cmd-ai-results" class="cmd-results" style="display:none">
+      <div class="cmd-ai-thinking">
+        <div class="cmd-ai-dot"></div>
+        <span>AI is searching across 3 brands, 750+ cities...</span>
+      </div>
+    </div>
+    <div class="cmd-footer">
+      <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</span>
+      <span><kbd>Enter</kbd> Open</span>
+      <span><kbd>Tab</kbd> Ask AI</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== AI CHAT SIDEBAR ========== -->
+<div id="ai-sidebar" class="ai-sidebar" style="display:none">
+  <div class="ai-header">
+    <div class="ai-header-left">
+      <div class="ai-avatar">AI</div>
+      <span>Brand OS Assistant</span>
+    </div>
+    <button class="ai-close" onclick="toggleAISidebar()">&times;</button>
+  </div>
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg ai-msg-bot">
+      <div class="ai-msg-avatar">AI</div>
+      <div class="ai-msg-content">
+        <p>Hi! I can help you find templates, generate city assets, check brand compliance, or create new projects. What do you need?</p>
+      </div>
+    </div>
+  </div>
+  <div class="ai-input-area">
+    <input type="text" id="ai-chat-input" placeholder="Ask anything about Via, Citymapper, Remix...">
+    <button class="ai-send" onclick="sendAIMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4z"/><path d="m22 2-10 10"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ========== APP SHELL ========== -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">V</div>
+      <span class="logo-text">Brand OS</span>
+    </div>
+
+    <div class="sidebar-section">
+      <a class="sidebar-item active" data-view="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a class="sidebar-item" data-view="cross-brand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4"/><path d="m15.4 6.5-6.8 4"/></svg>
+        <span>Cross-Brand</span>
+      </a>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Brands</div>
+
+    <div class="sidebar-section">
+      <a class="sidebar-item brand-via" data-view="via-home">
+        <span class="brand-dot via"></span>
+        <span>Via</span>
+        <span class="sidebar-count">750+</span>
+      </a>
+      <div class="sidebar-sub" id="via-subnav" style="display:none">
+        <a class="sidebar-subitem" data-view="via-foundation">Brand Foundation</a>
+        <a class="sidebar-subitem" data-view="via-templates">Templates</a>
+        <a class="sidebar-subitem" data-view="via-cities">City Manager</a>
+      </div>
+
+      <a class="sidebar-item brand-cm" data-view="cm-home">
+        <span class="brand-dot cm"></span>
+        <span>Citymapper</span>
+        <span class="sidebar-count">40+</span>
+      </a>
+      <div class="sidebar-sub" id="cm-subnav" style="display:none">
+        <a class="sidebar-subitem" data-view="cm-foundation">Brand Foundation</a>
+        <a class="sidebar-subitem" data-view="cm-templates">Templates</a>
+        <a class="sidebar-subitem" data-view="cm-cities">City Manager</a>
+      </div>
+
+      <a class="sidebar-item brand-remix" data-view="remix-home">
+        <span class="brand-dot remix"></span>
+        <span>Remix</span>
+        <span class="sidebar-count">450+</span>
+      </a>
+      <div class="sidebar-sub" id="remix-subnav" style="display:none">
+        <a class="sidebar-subitem" data-view="remix-foundation">Brand Foundation</a>
+        <a class="sidebar-subitem" data-view="remix-templates">Templates</a>
+        <a class="sidebar-subitem" data-view="remix-agencies">Agency Manager</a>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <a class="sidebar-item" data-view="projects">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.2 3.1A2 2 0 0 0 7.5 2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z"/></svg>
+        <span>Projects</span>
+      </a>
+      <a class="sidebar-item" data-view="insights">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Insights</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-ai-btn" onclick="toggleAISidebar()">
+        <span class="ai-sparkle">&#10024;</span>
+        <span>AI Assistant</span>
+      </button>
+      <div class="sidebar-shortcut">
+        <kbd>&#8984;K</kbd>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="breadcrumb" id="breadcrumb">
+        <span>Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-search" onclick="openCommandPalette()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search or ask AI...</span>
+          <kbd>&#8984;K</kbd>
+        </button>
+        <div class="topbar-avatar">C</div>
+      </div>
+    </header>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <section id="view-dashboard" class="view active">
+      <div class="view-header">
+        <div>
+          <h1>Good morning, Cheryl</h1>
+          <p class="subtitle">Via Brand OS &mdash; 3 brands, 750+ cities, one system.</p>
+        </div>
+        <div class="editor-actions">
+          <button class="btn-primary" onclick="navigateTo('city-generator')">
+            <span>&#10024;</span> Generate City Pack
+          </button>
+          <button class="btn-secondary" onclick="openCommandPalette()">
+            &#8984;K Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Brand Cards -->
+      <div class="brand-cards">
+        <div class="brand-card via-card" onclick="navigateTo('via-home')">
+          <div class="brand-card-header">
+            <div class="brand-card-logo via-bg">V</div>
+            <span class="brand-card-badge">750+ cities</span>
+          </div>
+          <h2>Via</h2>
+          <p>B2C riders &middot; B2G government &middot; Investor relations &middot; AV autonomous</p>
+          <div class="brand-card-stats">
+            <div class="stat">
+              <span class="stat-num">127</span>
+              <span class="stat-label">Templates</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">12</span>
+              <span class="stat-label">Active Projects</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">94%</span>
+              <span class="stat-label">Brand Health</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="brand-card cm-card" onclick="navigateTo('cm-home')">
+          <div class="brand-card-header">
+            <div class="brand-card-logo cm-bg">C</div>
+            <span class="brand-card-badge">40+ cities</span>
+          </div>
+          <h2>Citymapper</h2>
+          <p>Consumer journey planning &middot; City-specific design &middot; App-first experience</p>
+          <div class="brand-card-stats">
+            <div class="stat">
+              <span class="stat-num">43</span>
+              <span class="stat-label">Templates</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">3</span>
+              <span class="stat-label">Active Projects</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">91%</span>
+              <span class="stat-label">Brand Health</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="brand-card remix-card" onclick="navigateTo('remix-home')">
+          <div class="brand-card-header">
+            <div class="brand-card-logo remix-bg">R</div>
+            <span class="brand-card-badge">450+ agencies</span>
+          </div>
+          <h2>Remix</h2>
+          <p>Transit planning tool &middot; Data visualization &middot; Network design</p>
+          <div class="brand-card-stats">
+            <div class="stat">
+              <span class="stat-num">28</span>
+              <span class="stat-label">Templates</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">2</span>
+              <span class="stat-label">Active Projects</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">89%</span>
+              <span class="stat-label">Brand Health</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent & Activity -->
+      <div class="dashboard-grid">
+        <div class="dash-panel">
+          <h3>Active Projects</h3>
+          <div class="project-list">
+            <div class="project-item" onclick="navigateTo('via-av-poster')">
+              <span class="brand-dot via"></span>
+              <div class="project-info">
+                <span class="project-name">Waymo AV Expansion &mdash; Austin/Denver/Seattle</span>
+                <span class="project-meta">Via &middot; AV Launch Campaign &middot; 3 cities</span>
+              </div>
+              <span class="project-status status-progress">In Progress</span>
+            </div>
+            <div class="project-item">
+              <span class="brand-dot via"></span>
+              <div class="project-info">
+                <span class="project-name">Q1 2026 Earnings Report</span>
+                <span class="project-meta">Via &middot; Investor Relations &middot; 30 slides</span>
+              </div>
+              <span class="project-status status-review">In Review</span>
+            </div>
+            <div class="project-item">
+              <span class="brand-dot cm"></span>
+              <div class="project-info">
+                <span class="project-name">West Midlands Launch</span>
+                <span class="project-meta">Citymapper &middot; City Launch &middot; Cross-brand</span>
+              </div>
+              <span class="project-status status-progress">In Progress</span>
+            </div>
+            <div class="project-item">
+              <span class="brand-dot remix"></span>
+              <div class="project-info">
+                <span class="project-name">Ridership Modeling Feature Launch</span>
+                <span class="project-meta">Remix &middot; Product Launch &middot; Multi-channel</span>
+              </div>
+              <span class="project-status status-done">Completed</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-panel">
+          <h3>Brand Health Overview</h3>
+          <div class="health-bars">
+            <div class="health-item">
+              <div class="health-label">
+                <span class="brand-dot via"></span>
+                <span>Via</span>
+                <span class="health-score">94%</span>
+              </div>
+              <div class="health-bar"><div class="health-fill via-fill" style="width:94%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-label">
+                <span class="brand-dot cm"></span>
+                <span>Citymapper</span>
+                <span class="health-score">91%</span>
+              </div>
+              <div class="health-bar"><div class="health-fill cm-fill" style="width:91%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-label">
+                <span class="brand-dot remix"></span>
+                <span>Remix</span>
+                <span class="health-score">89%</span>
+              </div>
+              <div class="health-bar"><div class="health-fill remix-fill" style="width:89%"></div></div>
+            </div>
+          </div>
+          <div class="health-alerts">
+            <div class="alert-item alert-warn">
+              <span>&#9888;</span> 3 cities have outdated vehicle livery templates
+            </div>
+            <div class="alert-item alert-info">
+              <span>&#8505;</span> New AV compliance copy approved for Texas
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA HOME ==================== -->
+    <section id="view-via-home" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Via Brand Space</h1>
+          <p class="subtitle">750+ communities &middot; 35+ countries &middot; B2C, B2G, IR, AV</p>
+        </div>
+      </div>
+
+      <div class="section-cards">
+        <div class="section-card" onclick="navigateTo('via-foundation')">
+          <div class="section-card-icon via-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+          </div>
+          <h3>Brand Foundation</h3>
+          <p>Logo, color, typography, illustration, photography, voice & tone, layout principles</p>
+          <div class="section-card-meta">
+            <span>Last updated 3 days ago</span>
+          </div>
+        </div>
+
+        <div class="section-card" onclick="navigateTo('via-templates')">
+          <div class="section-card-icon via-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>Template Library</h3>
+          <p>127 templates across Rider Growth, AV, GovTech Sales, IR, Product Launch</p>
+          <div class="section-card-meta">
+            <span>12 active projects</span>
+          </div>
+        </div>
+
+        <div class="section-card" onclick="navigateTo('via-cities')">
+          <div class="section-card-icon via-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3>City Manager</h3>
+          <p>750+ white-label city brands. Manage local colors, logos, illustrations, assets.</p>
+          <div class="section-card-meta">
+            <span>5 new cities this month</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Via Quick Stats -->
+      <div class="via-quick-stats">
+        <div class="qs-item">
+          <span class="qs-num">821</span>
+          <span class="qs-label">Total Customers</span>
+          <span class="qs-change positive">+23% YoY</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-num">127</span>
+          <span class="qs-label">Active Templates</span>
+          <span class="qs-change positive">+8 this quarter</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-num">3</span>
+          <span class="qs-label">AV Cities Live</span>
+          <span class="qs-change positive">Chandler, Austin, Denver</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-num">94%</span>
+          <span class="qs-label">Brand Compliance</span>
+          <span class="qs-change neutral">Stable</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA BRAND FOUNDATION ==================== -->
+    <section id="view-via-foundation" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Brand Foundation</h1>
+          <p class="subtitle">The single source of truth for all Via design decisions</p>
+        </div>
+      </div>
+
+      <div class="foundation-grid">
+        <div class="foundation-card">
+          <div class="foundation-preview" style="background:#00a8e2;">
+            <span style="color:#fff;font-size:32px;font-weight:700;">via</span>
+          </div>
+          <h4>Logo System</h4>
+          <p>Primary, secondary, icon marks. Co-branding rules for Waymo, cities, government.</p>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview color-preview">
+            <span class="color-dot" style="background:#00a8e2"></span>
+            <span class="color-dot" style="background:#005f8a"></span>
+            <span class="color-dot" style="background:#7dd3fc"></span>
+            <span class="color-dot" style="background:#0f172a"></span>
+            <span class="color-dot" style="background:#f1f5f9"></span>
+          </div>
+          <h4>Color System</h4>
+          <p>Core palette, business-line extensions, accessibility matrix, city color adapter.</p>
+          <span class="foundation-ai-badge">&#10024; AI City Color Adapter</span>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview type-preview">
+            <span style="font-size:28px;font-weight:700;color:#0f172a">Aa</span>
+            <span style="font-size:14px;color:#64748b">Inter &middot; 400/500/600/700</span>
+          </div>
+          <h4>Typography</h4>
+          <p>Type scale, multi-language support, context-specific specs (screen, print, signage).</p>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview illus-preview">
+            <span style="font-size:48px">&#128652;</span>
+          </div>
+          <h4>Illustration System</h4>
+          <p>Character library, scene library, vehicle library, landmark components.</p>
+          <span class="foundation-ai-badge">&#10024; AI City Illustration Generator</span>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview photo-preview">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center;font-size:32px">&#128247;</div>
+          </div>
+          <h4>Photography</h4>
+          <p>Style guide, composition rules, post-processing specs, licensed image library.</p>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview icon-preview">
+            <span style="font-size:20px;display:flex;gap:8px">&#128652; &#128647; &#128694; &#9855; &#128694;</span>
+          </div>
+          <h4>Iconography</h4>
+          <p>System icons, transit mode icons, wayfinding icons. Size and color specs.</p>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview" style="background:#f8fafc;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:14px;color:#64748b;font-style:italic">"Your ride is arriving."</span>
+          </div>
+          <h4>Voice & Tone</h4>
+          <p>Rider (warm) &middot; Government (professional) &middot; Investor (confident). Terminology guide.</p>
+          <span class="foundation-ai-badge">&#10024; AI Copy Assistant</span>
+        </div>
+        <div class="foundation-card">
+          <div class="foundation-preview" style="background:#f8fafc;display:flex;align-items:center;justify-content:center">
+            <div style="display:grid;grid-template-columns:repeat(4,16px);grid-template-rows:repeat(3,16px);gap:4px">
+              <div style="background:#e2e8f0;grid-column:span 4;border-radius:2px"></div>
+              <div style="background:#e2e8f0;grid-column:span 2;border-radius:2px"></div>
+              <div style="background:#e2e8f0;grid-column:span 2;border-radius:2px"></div>
+              <div style="background:#e2e8f0;grid-column:span 1;border-radius:2px"></div>
+              <div style="background:#e2e8f0;grid-column:span 3;border-radius:2px"></div>
+            </div>
+          </div>
+          <h4>Layout Principles</h4>
+          <p>Grid system, spacing scale (4px base), information hierarchy, responsive breakpoints.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA TEMPLATES ==================== -->
+    <section id="view-via-templates" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Template Library</h1>
+          <p class="subtitle">127 templates organized by business context</p>
+        </div>
+        <button class="btn-secondary">+ New Template</button>
+      </div>
+
+      <div class="template-categories">
+        <div class="tmpl-cat" onclick="navigateTo('via-templates-rider')">
+          <div class="tmpl-cat-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">
+            <span>&#128652;</span>
+          </div>
+          <div class="tmpl-cat-info">
+            <h3>Rider Growth <span class="cat-badge">B2C</span></h3>
+            <p>New city launch packs, rider communication, environmental signage, rider education</p>
+          </div>
+          <div class="tmpl-cat-stats">
+            <span class="cat-count">48 templates</span>
+            <span class="cat-usage">Used 1,240 times</span>
+          </div>
+        </div>
+
+        <div class="tmpl-cat highlight" onclick="navigateTo('via-templates-av')">
+          <div class="tmpl-cat-icon" style="background:linear-gradient(135deg,#cffafe,#a5f3fc)">
+            <span>&#129302;</span>
+          </div>
+          <div class="tmpl-cat-info">
+            <h3>Autonomous Vehicles <span class="cat-badge new-badge">Waymo</span></h3>
+            <p>AV launch campaigns, rider experience materials, in-vehicle screens, compliance</p>
+          </div>
+          <div class="tmpl-cat-stats">
+            <span class="cat-count">22 templates</span>
+            <span class="cat-usage hot">&#128293; 3 new cities launching</span>
+          </div>
+        </div>
+
+        <div class="tmpl-cat" onclick="navigateTo('via-templates-gov')">
+          <div class="tmpl-cat-icon" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe)">
+            <span>&#127963;</span>
+          </div>
+          <div class="tmpl-cat-info">
+            <h3>GovTech Sales <span class="cat-badge">B2G</span></h3>
+            <p>Whitepapers, case studies, pitch decks, event materials, Mayors Council</p>
+          </div>
+          <div class="tmpl-cat-stats">
+            <span class="cat-count">35 templates</span>
+            <span class="cat-usage">Used 890 times</span>
+          </div>
+        </div>
+
+        <div class="tmpl-cat">
+          <div class="tmpl-cat-icon" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)">
+            <span>&#128200;</span>
+          </div>
+          <div class="tmpl-cat-info">
+            <h3>Investor Relations <span class="cat-badge ir-badge">Post-IPO</span></h3>
+            <p>Quarterly earnings decks, annual reports, IR landing pages, shareholder letters</p>
+          </div>
+          <div class="tmpl-cat-stats">
+            <span class="cat-count">14 templates</span>
+            <span class="cat-usage">Next: Q2 2026 earnings</span>
+          </div>
+        </div>
+
+        <div class="tmpl-cat">
+          <div class="tmpl-cat-icon" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">
+            <span>&#128640;</span>
+          </div>
+          <div class="tmpl-cat-info">
+            <h3>Product Launch</h3>
+            <p>Feature release campaigns, cross-platform announcements, integration showcases</p>
+          </div>
+          <div class="tmpl-cat-stats">
+            <span class="cat-count">8 templates</span>
+            <span class="cat-usage">Last: Ridership Modeling</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA AV TEMPLATES ==================== -->
+    <section id="view-via-templates-av" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Autonomous Vehicles</h1>
+          <p class="subtitle">22 templates &middot; Via + Waymo partnership &middot; 3 cities live, 5 launching</p>
+        </div>
+        <button class="btn-primary" onclick="navigateTo('city-generator')">
+          <span>&#10024;</span> Generate AV City Pack
+        </button>
+      </div>
+
+      <!-- AV Sub-categories -->
+      <div class="av-tabs">
+        <button class="av-tab active">Launch Campaign</button>
+        <button class="av-tab">Rider Experience</button>
+        <button class="av-tab">App Assets</button>
+        <button class="av-tab">&#128274; Compliance</button>
+      </div>
+
+      <!-- Template Grid -->
+      <div class="template-grid">
+        <div class="tmpl-card" onclick="navigateTo('via-av-poster')">
+          <div class="tmpl-thumb poster-thumb">
+            <div class="poster-mock">
+              <div class="poster-hero" style="background:linear-gradient(180deg,#00a8e2 0%,#005f8a 100%)">
+                <span style="color:white;font-size:10px;font-weight:700;letter-spacing:1px">YOUR RIDE IS<br>GOING AUTONOMOUS</span>
+              </div>
+              <div class="poster-body">
+                <div class="poster-line w60"></div>
+                <div class="poster-line w80"></div>
+                <div class="poster-line w40"></div>
+              </div>
+              <div class="poster-footer">
+                <span style="color:#00a8e2;font-size:8px;font-weight:700">via</span>
+                <span style="color:#94a3b8;font-size:6px">+ waymo</span>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>Bus Stop Poster</h4>
+            <p>A0 / A1 / A2 sizes &middot; Includes safety panel</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI city adaptation</span>
+              <span>Used in 3 cities</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb billboard-thumb">
+            <div class="billboard-mock">
+              <div style="background:linear-gradient(90deg,#00a8e2,#0ea5e9);height:100%;display:flex;align-items:center;padding:12px;border-radius:4px">
+                <div style="flex:1">
+                  <div style="color:white;font-size:8px;font-weight:700">THE FUTURE OF<br>TRANSIT IS HERE</div>
+                  <div style="background:rgba(255,255,255,0.3);height:2px;width:40px;margin-top:4px;border-radius:1px"></div>
+                </div>
+                <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>City Billboard</h4>
+            <p>Standard &middot; Digital screen &middot; Highway format</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI city adaptation</span>
+              <span>Used in 2 cities</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb social-thumb">
+            <div class="social-mock">
+              <div style="background:#f0f9ff;height:100%;border-radius:4px;padding:8px;display:flex;flex-direction:column;justify-content:space-between">
+                <div style="font-size:7px;font-weight:600;color:#0f172a">Autonomous rides are<br>now available in your city</div>
+                <div style="display:flex;gap:4px">
+                  <div style="width:16px;height:16px;background:#00a8e2;border-radius:2px"></div>
+                  <div style="width:16px;height:16px;background:#e0f2fe;border-radius:2px"></div>
+                  <div style="width:16px;height:16px;background:#bae6fd;border-radius:2px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>Social Media Kit</h4>
+            <p>Instagram &middot; Facebook &middot; X &middot; LinkedIn</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI copy variants</span>
+              <span>4 formats</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb screen-thumb">
+            <div class="screen-mock">
+              <div style="background:#0f172a;height:100%;border-radius:4px;padding:6px;display:flex;flex-direction:column;gap:4px">
+                <div style="color:#00a8e2;font-size:6px;font-weight:600">NEXT STOP</div>
+                <div style="color:white;font-size:9px;font-weight:700">Main St & 5th Ave</div>
+                <div style="flex:1;background:#1e293b;border-radius:3px;margin-top:2px"></div>
+                <div style="color:#94a3b8;font-size:5px">Vehicle scanning road ahead &middot; All clear</div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>In-Vehicle Screen UI</h4>
+            <p>Trip info &middot; Safety status &middot; Arrival alerts</p>
+            <div class="tmpl-meta">
+              <span>AV-specific design</span>
+              <span>3 screen types</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb safety-thumb">
+            <div style="background:#fffbeb;height:100%;border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:4px;border:1px solid #fde68a">
+              <div style="font-size:8px;font-weight:700;color:#92400e">&#9888; Safety Information</div>
+              <div style="font-size:5px;color:#78716c;line-height:1.4">This vehicle operates autonomously. Wheelchair accessible vehicles available on request...</div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>Safety Notice Card</h4>
+            <p>In-vehicle placement &middot; Multi-language</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-locked">&#128274; Legal copy locked</span>
+              <span>Compliance required</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb stop-thumb">
+            <div style="background:#f8fafc;height:100%;border-radius:4px;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+              <div style="width:24px;height:24px;background:#00a8e2;border-radius:50%;display:flex;align-items:center;justify-content:center">
+                <span style="color:white;font-size:10px">&#9679;</span>
+              </div>
+              <div style="font-size:7px;font-weight:600;color:#0f172a">AV PICKUP ZONE</div>
+              <div style="font-size:5px;color:#64748b">Stand here for autonomous vehicle</div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>AV Stop Signage</h4>
+            <p>Pickup zone &middot; Dropoff zone &middot; Waiting area</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI location adapt</span>
+              <span>Urban &middot; Suburban</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA AV POSTER EDITOR (HERO DEMO) ==================== -->
+    <section id="view-via-av-poster" class="view">
+      <div class="view-header compact">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>AV Bus Stop Poster</h1>
+          <p class="subtitle">Launch Campaign &middot; A0 Format &middot; Includes mandatory safety panel</p>
+        </div>
+        <div class="editor-actions">
+          <button class="btn-secondary">Export All Cities</button>
+          <button class="btn-primary">
+            <span>&#10024;</span> Generate for New City
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <!-- LEFT: Poster Preview -->
+        <div class="editor-preview">
+          <div class="city-selector">
+            <button class="city-btn active" data-city="austin" onclick="switchCity('austin')">
+              <span class="city-flag">&#127466;&#127480;</span> Austin, TX
+            </button>
+            <button class="city-btn" data-city="denver" onclick="switchCity('denver')">
+              <span class="city-flag">&#127466;&#127480;</span> Denver, CO
+            </button>
+            <button class="city-btn" data-city="seattle" onclick="switchCity('seattle')">
+              <span class="city-flag">&#127466;&#127480;</span> Seattle, WA
+            </button>
+          </div>
+
+          <div class="poster-preview-large" id="poster-preview">
+            <div class="poster-lg-hero" id="poster-hero">
+              <div class="poster-lg-badge">via + waymo</div>
+              <div class="poster-lg-city-illus" id="poster-illustration">
+                <!-- City illustration area -->
+                <div class="illus-placeholder" id="city-illus">
+                  <span>&#127963;</span>
+                  <span style="font-size:11px">Texas State Capitol</span>
+                </div>
+              </div>
+              <h2 class="poster-lg-headline" id="poster-headline">Your ride is going<br>autonomous in Austin</h2>
+              <p class="poster-lg-sub" id="poster-subline">Starting Spring 2026, Waymo autonomous vehicles join the Austin transit network. Same app. Same price. A whole new ride.</p>
+            </div>
+            <div class="poster-lg-body">
+              <div class="poster-lg-steps">
+                <div class="poster-step">
+                  <div class="step-num">1</div>
+                  <div class="step-text">Book your ride in the app</div>
+                </div>
+                <div class="poster-step">
+                  <div class="step-num">2</div>
+                  <div class="step-text">Walk to the AV pickup zone</div>
+                </div>
+                <div class="poster-step">
+                  <div class="step-num">3</div>
+                  <div class="step-text">Enjoy your autonomous ride</div>
+                </div>
+              </div>
+            </div>
+            <div class="poster-lg-safety" id="poster-safety">
+              <div class="safety-header">&#9888; Important Information</div>
+              <div class="safety-text">Autonomous vehicle service is not available for wheelchair-accessible trips, riders under 18, or groups of 4+. For accessible vehicles, please select "Accessible" in the app. Full terms at ridewithvia.com/av-terms</div>
+            </div>
+            <div class="poster-lg-footer">
+              <span class="poster-lg-logo">via</span>
+              <span class="poster-lg-partner">powered by waymo</span>
+              <span class="poster-lg-qr">[ QR ]</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Controls Panel -->
+        <div class="editor-controls">
+          <!-- Locked Elements -->
+          <div class="control-section">
+            <div class="control-header">
+              <span class="lock-icon">&#128274;</span>
+              <h4>Locked Elements</h4>
+              <span class="control-badge locked">Cannot edit</span>
+            </div>
+            <div class="locked-items">
+              <div class="locked-item">
+                <span class="locked-label">Via Logo</span>
+                <span class="locked-value">Position & min size enforced</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Waymo Co-brand</span>
+                <span class="locked-value">Logo ratio 1:0.6</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Safety Panel</span>
+                <span class="locked-value">Legal copy &mdash; state-specific</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Accessibility</span>
+                <span class="locked-value">WCAG AA contrast &check;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Variable Elements -->
+          <div class="control-section">
+            <div class="control-header">
+              <span class="unlock-icon">&#10024;</span>
+              <h4>Variable Elements</h4>
+              <span class="control-badge variable">AI-assisted</span>
+            </div>
+
+            <div class="control-field">
+              <label>Headline</label>
+              <input type="text" id="ctrl-headline" value="Your ride is going autonomous in Austin" class="control-input">
+              <button class="ai-suggest-btn" onclick="suggestHeadlines()">&#10024; AI Suggest</button>
+              <div class="ai-suggestions" id="headline-suggestions" style="display:none">
+                <div class="suggestion" onclick="pickSuggestion(this, 'ctrl-headline')">The future of transit has arrived in Austin</div>
+                <div class="suggestion" onclick="pickSuggestion(this, 'ctrl-headline')">Austin, meet your autonomous ride</div>
+                <div class="suggestion" onclick="pickSuggestion(this, 'ctrl-headline')">Driverless. Affordable. Now in Austin.</div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>City Illustration</label>
+              <div class="illus-options" id="illus-options">
+                <div class="illus-opt active" data-illus="capitol">
+                  <span>&#127963;</span>
+                  <span>Capitol</span>
+                </div>
+                <div class="illus-opt" data-illus="bridge">
+                  <span>&#127753;</span>
+                  <span>Bridge</span>
+                </div>
+                <div class="illus-opt" data-illus="skyline">
+                  <span>&#127751;</span>
+                  <span>Skyline</span>
+                </div>
+              </div>
+              <button class="ai-suggest-btn">&#10024; Generate More</button>
+            </div>
+
+            <div class="control-field">
+              <label>Local Accent Color</label>
+              <div class="color-options">
+                <div class="color-opt active" style="background:#00a8e2" title="Via Blue (default)"></div>
+                <div class="color-opt" style="background:#bf5700" title="UT Burnt Orange"></div>
+                <div class="color-opt" style="background:#1b4332" title="Austin Green"></div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>Safety Copy Region</label>
+              <select class="control-select">
+                <option>Texas (TX) &mdash; Standard AV disclosure</option>
+                <option>Arizona (AZ) &mdash; Chandler specific</option>
+                <option>Colorado (CO) &mdash; Denver specific</option>
+                <option>Washington (WA) &mdash; Seattle specific</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- AI Context Panel -->
+          <div class="control-section ai-panel">
+            <div class="control-header">
+              <span>&#128161;</span>
+              <h4>AI Insights</h4>
+            </div>
+            <div class="ai-insights">
+              <div class="insight-item">
+                <span class="insight-icon">&#127961;</span>
+                <p>Austin has no white-label brand yet. Using Via default branding. <a href="#">Create city brand?</a></p>
+              </div>
+              <div class="insight-item">
+                <span class="insight-icon">&#128220;</span>
+                <p>Texas AV disclosure requirements updated Jan 2026. Safety copy is current. <span class="insight-check">&#9989;</span></p>
+              </div>
+              <div class="insight-item">
+                <span class="insight-icon">&#128194;</span>
+                <p>Reference: <a href="#">Denver AV poster</a> completed 3 weeks ago &mdash; similar format.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA CITY MANAGER ==================== -->
+    <section id="view-via-cities" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>City Manager</h1>
+          <p class="subtitle">750+ white-label city brands across 35+ countries</p>
+        </div>
+        <button class="btn-primary" onclick="navigateTo('city-generator')">
+          <span>&#10024;</span> Generate City Pack
+        </button>
+      </div>
+
+      <!-- City Filters -->
+      <div class="city-filters">
+        <input type="text" placeholder="Search cities..." class="city-search">
+        <select class="filter-select"><option>All Countries</option><option>United States</option><option>United Kingdom</option><option>Australia</option><option>Germany</option></select>
+        <select class="filter-select"><option>All Service Types</option><option>Microtransit</option><option>Paratransit</option><option>School Bus</option><option>AV (Autonomous)</option><option>Fixed Route</option></select>
+        <select class="filter-select"><option>All Statuses</option><option>Live</option><option>Launching</option><option>Planning</option></select>
+      </div>
+
+      <!-- City List -->
+      <div class="city-list">
+        <div class="city-row" onclick="navigateTo('via-city-detail')">
+          <div class="city-brand-mark" style="background:#E85D04">CF</div>
+          <div class="city-info">
+            <span class="city-name">Chandler Flex</span>
+            <span class="city-location">Chandler, AZ &middot; United States</span>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">Microtransit</span>
+            <span class="city-tag av-tag">AV Live</span>
+          </div>
+          <div class="city-health">
+            <span class="health-dot good"></span>
+            <span>98%</span>
+          </div>
+          <span class="city-arrow">&rsaquo;</span>
+        </div>
+
+        <div class="city-row">
+          <div class="city-brand-mark" style="background:#2563eb">MK</div>
+          <div class="city-info">
+            <span class="city-name">MK Connect</span>
+            <span class="city-location">Milton Keynes &middot; United Kingdom</span>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">Microtransit</span>
+          </div>
+          <div class="city-health">
+            <span class="health-dot good"></span>
+            <span>95%</span>
+          </div>
+          <span class="city-arrow">&rsaquo;</span>
+        </div>
+
+        <div class="city-row">
+          <div class="city-brand-mark" style="background:#eab308">BN</div>
+          <div class="city-info">
+            <span class="city-name">Bee Network</span>
+            <span class="city-location">Greater Manchester &middot; United Kingdom</span>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">Fixed Route</span>
+            <span class="city-tag">Microtransit</span>
+          </div>
+          <div class="city-health">
+            <span class="health-dot warn"></span>
+            <span>87%</span>
+          </div>
+          <span class="city-arrow">&rsaquo;</span>
+        </div>
+
+        <div class="city-row">
+          <div class="city-brand-mark" style="background:#16a34a">GR</div>
+          <div class="city-info">
+            <span class="city-name">GoRaleigh Access</span>
+            <span class="city-location">Raleigh, NC &middot; United States</span>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">Paratransit</span>
+          </div>
+          <div class="city-health">
+            <span class="health-dot good"></span>
+            <span>92%</span>
+          </div>
+          <span class="city-arrow">&rsaquo;</span>
+        </div>
+
+        <div class="city-row">
+          <div class="city-brand-mark" style="background:#7c3aed">AP</div>
+          <div class="city-info">
+            <span class="city-name">Aspen Transit</span>
+            <span class="city-location">Aspen, CO &middot; United States</span>
+          </div>
+          <div class="city-tags">
+            <span class="city-tag">Microtransit</span>
+            <span class="city-tag dest-tag">Destination City</span>
+          </div>
+          <div class="city-health">
+            <span class="health-dot good"></span>
+            <span>96%</span>
+          </div>
+          <span class="city-arrow">&rsaquo;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIA CITY DETAIL ==================== -->
+    <section id="view-via-city-detail" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>
+            <span class="city-detail-mark" style="background:#E85D04">CF</span>
+            Chandler Flex
+          </h1>
+          <p class="subtitle">Chandler, AZ &middot; Microtransit + AV (Waymo) &middot; Live since June 2023</p>
+        </div>
+      </div>
+
+      <div class="city-detail-grid">
+        <div class="city-detail-panel">
+          <h3>City Brand Configuration</h3>
+          <div class="config-row">
+            <span class="config-label">White-label Name</span>
+            <span class="config-value">Chandler Flex</span>
+          </div>
+          <div class="config-row">
+            <span class="config-label">Primary Color</span>
+            <div class="config-color">
+              <span class="color-swatch" style="background:#E85D04"></span>
+              <span>#E85D04</span>
+            </div>
+          </div>
+          <div class="config-row">
+            <span class="config-label">Service Types</span>
+            <span class="config-value">Microtransit, AV (Waymo)</span>
+          </div>
+          <div class="config-row">
+            <span class="config-label">AV Live Since</span>
+            <span class="config-value">September 2025</span>
+          </div>
+          <div class="config-row">
+            <span class="config-label">Languages</span>
+            <span class="config-value">English, Spanish</span>
+          </div>
+        </div>
+
+        <div class="city-detail-panel">
+          <h3>City Assets</h3>
+          <div class="city-assets-grid">
+            <div class="city-asset">
+              <div class="asset-thumb" style="background:#E85D04;color:white;font-weight:700;font-size:12px">CF</div>
+              <span>Logo</span>
+            </div>
+            <div class="city-asset">
+              <div class="asset-thumb" style="background:linear-gradient(135deg,#E85D04,#00a8e2)"></div>
+              <span>Color Palette</span>
+            </div>
+            <div class="city-asset">
+              <div class="asset-thumb" style="background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px">&#127797;</div>
+              <span>Illustrations</span>
+            </div>
+            <div class="city-asset">
+              <div class="asset-thumb" style="background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:18px">&#128652;</div>
+              <span>Vehicle Wrap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="city-detail-panel full-width">
+        <h3>Generated Materials (23 assets)</h3>
+        <div class="materials-grid">
+          <div class="material-thumb"><div class="mat-inner" style="background:linear-gradient(180deg,#E85D04,#00a8e2)"></div><span>Launch Poster</span></div>
+          <div class="material-thumb"><div class="mat-inner" style="background:#E85D04"></div><span>Vehicle Wrap</span></div>
+          <div class="material-thumb"><div class="mat-inner" style="background:#0f172a"></div><span>AV Screen UI</span></div>
+          <div class="material-thumb"><div class="mat-inner" style="background:#f0f9ff"></div><span>Bus Stop Sign</span></div>
+          <div class="material-thumb"><div class="mat-inner" style="background:linear-gradient(135deg,#E85D04,#ea580c)"></div><span>Social Media</span></div>
+          <div class="material-thumb"><div class="mat-inner" style="background:#fff7ed"></div><span>Safety Card</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CITYMAPPER HOME ==================== -->
+    <section id="view-cm-home" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag cm-tag">Citymapper</div>
+          <h1>Citymapper Brand Space</h1>
+          <p class="subtitle">40+ cities &middot; "Making Cities <em>Usable</em>" &middot; London-born, globally loved</p>
+        </div>
+      </div>
+
+      <!-- Real Brand Specs -->
+      <div class="cm-brand-overview">
+        <div class="cm-brand-card">
+          <div class="cm-brand-visual">
+            <div class="cm-logo-display">
+              <div class="cm-logo-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                  <rect width="40" height="40" rx="10" fill="#37AB2F"/>
+                  <circle cx="12" cy="20" r="3" fill="white"/>
+                  <polygon points="20,12 28,20 20,28" fill="white"/>
+                  <circle cx="30" cy="20" r="2.5" fill="white"/>
+                </svg>
+              </div>
+              <div>
+                <div style="font-size:18px;font-weight:700;color:#0f172a">citymapper</div>
+                <div style="font-size:11px;color:#64748b">Arrow + dots &middot; On #37AB2F green</div>
+              </div>
+            </div>
+          </div>
+          <div class="cm-brand-specs">
+            <div class="cm-spec">
+              <span class="cm-spec-label">Primary Color</span>
+              <div class="cm-spec-value">
+                <span class="color-swatch" style="background:#37AB2F;width:20px;height:20px;border-radius:4px;display:inline-block;vertical-align:middle"></span>
+                <code>#37AB2F</code> &mdash; Citymapper Green
+              </div>
+            </div>
+            <div class="cm-spec">
+              <span class="cm-spec-label">Typography</span>
+              <span class="cm-spec-value" style="font-family:'Proxima Nova Soft',system-ui,sans-serif">Proxima Nova Soft &mdash; all weights</span>
+            </div>
+            <div class="cm-spec">
+              <span class="cm-spec-label">Tagline</span>
+              <span class="cm-spec-value">Making Cities <em>Usable</em></span>
+            </div>
+            <div class="cm-spec">
+              <span class="cm-spec-label">Voice</span>
+              <span class="cm-spec-value">Witty &middot; Direct &middot; Transit-geeky &middot; Confident</span>
+            </div>
+            <div class="cm-spec">
+              <span class="cm-spec-label">Coverage</span>
+              <span class="cm-spec-value">400+ cities &middot; One of the most loved apps on mobile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Templates focused on Social + Billboard -->
+      <h3 style="margin-bottom:16px">Design Templates</h3>
+      <div class="template-grid">
+        <div class="tmpl-card" onclick="navigateTo('cm-social')">
+          <div class="tmpl-thumb" style="background:#e8f5e6">
+            <div style="width:70%;display:flex;gap:8px">
+              <div style="width:48%;aspect-ratio:1;background:#37AB2F;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px">
+                <span style="color:white;font-size:7px;font-weight:700;text-align:center">YOUR CITY.<br>NOW USABLE.</span>
+                <div style="background:rgba(255,255,255,0.3);width:16px;height:16px;border-radius:50%;margin-top:4px"></div>
+              </div>
+              <div style="width:48%;aspect-ratio:0.56;background:white;border-radius:6px;border:1px solid #e2e8f0;display:flex;flex-direction:column;padding:4px">
+                <div style="background:#37AB2F;height:40%;border-radius:3px;margin-bottom:3px"></div>
+                <div style="font-size:5px;font-weight:600;color:#0f172a">Citymapper is<br>now in your city</div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>Social Media Kit</h4>
+            <p>Instagram &middot; TikTok &middot; X &middot; LinkedIn &middot; Facebook</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI city adaptation</span>
+              <span>6 formats</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card" onclick="navigateTo('cm-billboard')">
+          <div class="tmpl-thumb" style="background:#f0fdf0">
+            <div style="width:85%;height:55%;background:#37AB2F;border-radius:4px;display:flex;align-items:center;padding:12px;gap:8px">
+              <div style="flex:1">
+                <div style="color:white;font-size:8px;font-weight:700">GET THERE<br>THE BEST WAY</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:5px;margin-top:3px">citymapper</div>
+              </div>
+              <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center">
+                <span style="color:white;font-size:14px">&#8599;</span>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>City Billboard</h4>
+            <p>Standard outdoor &middot; Digital screen &middot; Transit station</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI city adaptation</span>
+              <span>3 sizes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tmpl-card">
+          <div class="tmpl-thumb" style="background:#f8fafc">
+            <div style="width:40%;aspect-ratio:0.5;background:white;border-radius:10px;border:2px solid #e2e8f0;overflow:hidden">
+              <div style="height:12px;background:#37AB2F;display:flex;align-items:center;padding:0 4px">
+                <span style="color:white;font-size:4px;font-weight:600">citymapper</span>
+              </div>
+              <div style="padding:4px;font-size:4px;color:#64748b">
+                <div style="background:#e8f5e6;height:6px;border-radius:2px;margin-bottom:2px"></div>
+                <div style="background:#f1f5f9;height:4px;border-radius:2px;margin-bottom:2px"></div>
+                <div style="background:#f1f5f9;height:4px;border-radius:2px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-info">
+            <h4>App Store Screenshots</h4>
+            <p>iOS &middot; Android &middot; Feature Graphic</p>
+            <div class="tmpl-meta">
+              <span class="tmpl-ai">&#10024; AI per-city screenshots</span>
+              <span>3 platforms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- City Icon System -->
+      <div class="cm-feature-panel" style="margin-top:32px">
+        <h3>&#11088; City Transit Icon System</h3>
+        <p class="cm-feature-desc">Every Citymapper city gets locally-inspired transit icons &mdash; riders instantly recognize their city's personality.</p>
+        <div class="cm-icons-showcase">
+          <div class="cm-city-icon">
+            <div class="cm-icon-circle" style="background:#e11d48">&#128655;</div>
+            <span>London</span>
+          </div>
+          <div class="cm-city-icon">
+            <div class="cm-icon-circle" style="background:#eab308">&#128661;</div>
+            <span>New York</span>
+          </div>
+          <div class="cm-city-icon">
+            <div class="cm-icon-circle" style="background:#2563eb">&#128648;</div>
+            <span>Paris</span>
+          </div>
+          <div class="cm-city-icon">
+            <div class="cm-icon-circle" style="background:#dc2626">&#128645;</div>
+            <span>Tokyo</span>
+          </div>
+          <div class="cm-city-icon">
+            <div class="cm-icon-circle" style="background:#16a34a">&#128651;</div>
+            <span>Berlin</span>
+          </div>
+          <div class="cm-city-icon cm-icon-ai">
+            <div class="cm-icon-circle" style="background:#e2e8f0">&#10024;</div>
+            <span>AI Generate</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== REMIX HOME ==================== -->
+    <section id="view-remix-home" class="view">
+      <div class="view-header">
+        <div>
+          <div class="brand-tag remix-tag">Remix</div>
+          <h1>Remix Brand Space</h1>
+          <p class="subtitle">450+ transit agencies &middot; Network planning &middot; Data-driven design</p>
+        </div>
+      </div>
+
+      <div class="section-cards">
+        <div class="section-card" onclick="navigateTo('remix-foundation')">
+          <div class="section-card-icon remix-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+          </div>
+          <h3>Brand Foundation</h3>
+          <p>Data visualization system, map design, professional tool aesthetic</p>
+        </div>
+
+        <div class="section-card" onclick="navigateTo('remix-templates')">
+          <div class="section-card-icon remix-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>Template Library</h3>
+          <p>28 templates: product marketing, user training, B2G sales, release notes</p>
+        </div>
+
+        <div class="section-card" onclick="navigateTo('remix-agencies')">
+          <div class="section-card-icon remix-accent">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Agency Manager</h3>
+          <p>450+ transit agencies with custom training and proposal materials</p>
+        </div>
+      </div>
+
+      <!-- Remix Feature: Data Viz System -->
+      <div class="remix-feature-panel">
+        <h3>&#128202; Core System: Data Visualization</h3>
+        <p class="remix-feature-desc">Remix's design DNA is data. Every chart, map, and dashboard follows a unified visual language built for transit planners.</p>
+        <div class="remix-dataviz-showcase">
+          <div class="remix-chart">
+            <div class="chart-label">Ridership Trends</div>
+            <div class="chart-bars">
+              <div class="chart-bar" style="height:40%;background:#6B4FBB"></div>
+              <div class="chart-bar" style="height:65%;background:#6B4FBB"></div>
+              <div class="chart-bar" style="height:55%;background:#6B4FBB"></div>
+              <div class="chart-bar" style="height:80%;background:#6B4FBB"></div>
+              <div class="chart-bar" style="height:70%;background:#6B4FBB"></div>
+              <div class="chart-bar" style="height:90%;background:#8b5cf6"></div>
+            </div>
+          </div>
+          <div class="remix-chart">
+            <div class="chart-label">Coverage Heatmap</div>
+            <div class="chart-heatmap">
+              <div class="heat-cell" style="background:#ede9fe"></div>
+              <div class="heat-cell" style="background:#c4b5fd"></div>
+              <div class="heat-cell" style="background:#8b5cf6"></div>
+              <div class="heat-cell" style="background:#a78bfa"></div>
+              <div class="heat-cell" style="background:#6B4FBB"></div>
+              <div class="heat-cell" style="background:#ddd6fe"></div>
+              <div class="heat-cell" style="background:#7c3aed"></div>
+              <div class="heat-cell" style="background:#6B4FBB"></div>
+              <div class="heat-cell" style="background:#c4b5fd"></div>
+              <div class="heat-cell" style="background:#8b5cf6"></div>
+              <div class="heat-cell" style="background:#ede9fe"></div>
+              <div class="heat-cell" style="background:#a78bfa"></div>
+            </div>
+          </div>
+          <div class="remix-chart">
+            <div class="chart-label">Mode Split</div>
+            <div class="chart-donut">
+              <svg viewBox="0 0 36 36" class="donut-svg">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#ede9fe" stroke-width="3"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#6B4FBB" stroke-width="3" stroke-dasharray="45 55" stroke-dashoffset="25"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-dasharray="30 70" stroke-dashoffset="80"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CROSS-BRAND HUB ==================== -->
+    <section id="view-cross-brand" class="view">
+      <div class="view-header">
+        <div>
+          <h1>Cross-Brand Hub</h1>
+          <p class="subtitle">Campaigns and assets that span Via, Citymapper, and Remix</p>
+        </div>
+        <button class="btn-primary">+ New Cross-Brand Campaign</button>
+      </div>
+
+      <div class="cross-brand-cards">
+        <div class="xb-card">
+          <div class="xb-brands">
+            <span class="brand-dot via"></span>
+            <span class="brand-dot cm"></span>
+          </div>
+          <h3>Waymo AV Expansion</h3>
+          <p>Austin, Denver, Seattle &mdash; Joint Via operations + Citymapper rider experience</p>
+          <span class="project-status status-progress">In Progress</span>
+        </div>
+        <div class="xb-card">
+          <div class="xb-brands">
+            <span class="brand-dot via"></span>
+            <span class="brand-dot cm"></span>
+          </div>
+          <h3>West Midlands Launch</h3>
+          <p>Transport for West Midlands selects Citymapper, powered by Via operations</p>
+          <span class="project-status status-progress">In Progress</span>
+        </div>
+        <div class="xb-card">
+          <div class="xb-brands">
+            <span class="brand-dot remix"></span>
+            <span class="brand-dot cm"></span>
+            <span class="brand-dot via"></span>
+          </div>
+          <h3>Ridership Modeling Launch</h3>
+          <p>Remix feature powered by Citymapper data &mdash; full ecosystem story</p>
+          <span class="project-status status-done">Completed</span>
+        </div>
+      </div>
+
+      <div class="xb-rules-panel">
+        <h3>Brand Relationship Rules</h3>
+        <div class="xb-rule">
+          <span class="brand-dot via"></span><span class="xb-connector">+</span><span class="brand-dot cm"></span>
+          <span class="xb-rule-text">Via leads in operations context. Citymapper leads in rider context. "Powered by" for secondary brand.</span>
+        </div>
+        <div class="xb-rule">
+          <span class="brand-dot via"></span><span class="xb-connector">+</span><span class="brand-dot remix"></span>
+          <span class="xb-rule-text">Via is parent brand. Remix shows "A Via Company" tag. Shared data visualizations use Remix's chart system.</span>
+        </div>
+        <div class="xb-rule">
+          <span class="brand-dot cm"></span><span class="xb-connector">+</span><span class="brand-dot remix"></span>
+          <span class="xb-rule-text">Citymapper data feeds Remix planning. Co-branded as "Real ridership data from Citymapper, in Remix."</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CITY MATERIAL GENERATOR (HERO WORKFLOW) ==================== -->
+    <section id="view-city-generator" class="view">
+
+      <!-- Step Indicator -->
+      <div class="gen-steps-bar">
+        <div class="gen-step active" data-step="1">
+          <div class="gen-step-num">1</div>
+          <span>City Setup</span>
+        </div>
+        <div class="gen-step-line active"></div>
+        <div class="gen-step" data-step="2">
+          <div class="gen-step-num">2</div>
+          <span>Visual Direction</span>
+        </div>
+        <div class="gen-step-line"></div>
+        <div class="gen-step" data-step="3">
+          <div class="gen-step-num">3</div>
+          <span>Brand Config</span>
+        </div>
+        <div class="gen-step-line"></div>
+        <div class="gen-step" data-step="4">
+          <div class="gen-step-num">4</div>
+          <span>Select Materials</span>
+        </div>
+        <div class="gen-step-line"></div>
+        <div class="gen-step" data-step="5">
+          <div class="gen-step-num">5</div>
+          <span>Generate &amp; Review</span>
+        </div>
+      </div>
+
+      <!-- ===== STEP 1: City Setup ===== -->
+      <div class="gen-panel" id="gen-step-1">
+        <div class="gen-panel-grid">
+          <!-- Left: Form -->
+          <div class="gen-form-card">
+            <h2>New City Material Pack</h2>
+            <p class="subtitle">Set up the city, and AI will generate a complete branded material pack.</p>
+
+            <div class="gen-field">
+              <label>Brand</label>
+              <div class="gen-brand-selector">
+                <div class="gen-brand-opt active" data-brand="via" onclick="selectGenBrand('via')">
+                  <span class="brand-dot via"></span> Via
+                </div>
+                <div class="gen-brand-opt" data-brand="cm" onclick="selectGenBrand('cm')">
+                  <span class="brand-dot cm"></span> Citymapper
+                </div>
+                <div class="gen-brand-opt" data-brand="remix" onclick="selectGenBrand('remix')">
+                  <span class="brand-dot remix"></span> Remix
+                </div>
+              </div>
+            </div>
+
+            <div class="gen-field">
+              <label>City Name</label>
+              <input type="text" id="gen-city-name" class="control-input" placeholder="e.g. Miami, Berlin, Sydney..." value="Miami">
+            </div>
+
+            <div class="gen-field-row">
+              <div class="gen-field">
+                <label>Country / Region</label>
+                <select class="control-select" id="gen-country">
+                  <option value="us">United States</option>
+                  <option value="uk">United Kingdom</option>
+                  <option value="de">Germany</option>
+                  <option value="fr">France</option>
+                  <option value="au">Australia</option>
+                  <option value="jp">Japan</option>
+                </select>
+              </div>
+              <div class="gen-field">
+                <label>Primary Language</label>
+                <select class="control-select" id="gen-lang">
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="de">German</option>
+                  <option value="fr">French</option>
+                  <option value="ja">Japanese</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="gen-field" id="gen-service-type-field">
+              <label>Service Type</label>
+              <div class="gen-tag-selector">
+                <div class="gen-tag active" onclick="this.classList.toggle('active')">Microtransit</div>
+                <div class="gen-tag" onclick="this.classList.toggle('active')">Paratransit</div>
+                <div class="gen-tag" onclick="this.classList.toggle('active')">AV (Autonomous)</div>
+                <div class="gen-tag" onclick="this.classList.toggle('active')">Fixed Route</div>
+                <div class="gen-tag" onclick="this.classList.toggle('active')">School Bus</div>
+              </div>
+            </div>
+
+            <div class="gen-field">
+              <label>White-label Name (optional)</label>
+              <input type="text" id="gen-wl-name" class="control-input" placeholder="e.g. Miami-Dade Transit, MiamiGo..." value="">
+              <span class="gen-hint">Leave blank to use "[City] + Via" default</span>
+            </div>
+          </div>
+
+          <!-- Right: Quick Start Templates -->
+          <div class="gen-quick-card">
+            <h3>&#9889; Quick Start from Existing City</h3>
+            <p class="subtitle">Clone settings from a similar city to speed things up.</p>
+            <div class="gen-quick-list">
+              <div class="gen-quick-item" onclick="quickFillCity('chandler')">
+                <div class="city-brand-mark" style="background:#E85D04;width:32px;height:32px;font-size:10px">CF</div>
+                <div class="gen-quick-info">
+                  <span class="gen-quick-name">Chandler Flex</span>
+                  <span class="gen-quick-meta">AZ &middot; Microtransit + AV &middot; 23 assets</span>
+                </div>
+                <span class="gen-quick-clone">Clone</span>
+              </div>
+              <div class="gen-quick-item" onclick="quickFillCity('manchester')">
+                <div class="city-brand-mark" style="background:#eab308;width:32px;height:32px;font-size:10px">BN</div>
+                <div class="gen-quick-info">
+                  <span class="gen-quick-name">Bee Network</span>
+                  <span class="gen-quick-meta">Manchester &middot; Fixed Route &middot; 18 assets</span>
+                </div>
+                <span class="gen-quick-clone">Clone</span>
+              </div>
+              <div class="gen-quick-item" onclick="quickFillCity('raleigh')">
+                <div class="city-brand-mark" style="background:#16a34a;width:32px;height:32px;font-size:10px">GR</div>
+                <div class="gen-quick-info">
+                  <span class="gen-quick-name">GoRaleigh Access</span>
+                  <span class="gen-quick-meta">NC &middot; Paratransit &middot; 15 assets</span>
+                </div>
+                <span class="gen-quick-clone">Clone</span>
+              </div>
+            </div>
+
+            <div class="gen-ai-tip">
+              <span>&#10024;</span>
+              <p>AI will analyze city demographics, existing transit, and local culture to suggest branding in the next step.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-nav">
+          <div></div>
+          <button class="btn-primary" onclick="genNextStep(2)">Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2: Visual Direction / Moodboard ===== -->
+      <div class="gen-panel" id="gen-step-2" style="display:none">
+
+        <!-- API Key Banner (shown when no key) -->
+        <div class="gen-api-banner" id="gen-api-banner">
+          <div class="gen-api-banner-left">
+            <span>&#128247;</span>
+            <div>
+              <strong>Connect Unsplash for real city photography</strong>
+              <p>Get a free API key at <a href="https://unsplash.com/developers" target="_blank">unsplash.com/developers</a> (2 min setup)</p>
+            </div>
+          </div>
+          <div class="gen-api-input-wrap">
+            <input type="text" id="gen-unsplash-key" class="control-input" placeholder="Paste your Access Key..." style="width:260px">
+            <button class="btn-primary" onclick="connectUnsplash()" style="white-space:nowrap">Connect</button>
+          </div>
+        </div>
+
+        <!-- Connected Banner (shown when key exists) -->
+        <div class="gen-api-connected" id="gen-api-connected" style="display:none">
+          <span>&#9989; Unsplash connected</span>
+          <button class="gen-api-disconnect" onclick="disconnectUnsplash()">&times;</button>
+        </div>
+
+        <div class="gen-moodboard-header">
+          <div>
+            <h2 id="gen-mood-title">Miami &mdash; Visual Direction</h2>
+            <p class="subtitle">AI curates city photography to define the visual tone for all materials.</p>
+          </div>
+          <div class="gen-mood-search-wrap">
+            <input type="text" id="gen-mood-search" class="control-input" placeholder="Search: miami city transit landmarks..." value="miami city transit">
+            <button class="btn-secondary" onclick="searchMoodboard()">&#128269; Search</button>
+          </div>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="gen-mood-cats">
+          <button class="gen-mood-cat active" onclick="filterMoodboard('all', this)">All</button>
+          <button class="gen-mood-cat" onclick="filterMoodboard('landmark', this)">Landmarks</button>
+          <button class="gen-mood-cat" onclick="filterMoodboard('transit', this)">Transit</button>
+          <button class="gen-mood-cat" onclick="filterMoodboard('street', this)">Street Life</button>
+          <button class="gen-mood-cat" onclick="filterMoodboard('architecture', this)">Architecture</button>
+          <button class="gen-mood-cat" onclick="filterMoodboard('nature', this)">Nature</button>
+        </div>
+
+        <!-- Photo Grid -->
+        <div class="gen-mood-grid" id="gen-mood-grid">
+          <!-- Photos loaded dynamically via JS -->
+          <div class="gen-mood-empty" id="gen-mood-empty">
+            <span>&#128247;</span>
+            <p>Click <strong>Search</strong> to fetch city photography from Unsplash,<br>or connect your API key above for live search.</p>
+          </div>
+        </div>
+
+        <!-- Selected Photos Summary + Color Extraction -->
+        <div class="gen-mood-summary" id="gen-mood-summary" style="display:none">
+          <div class="gen-mood-colors">
+            <h4>&#127912; Extracted Color Palette</h4>
+            <div class="gen-mood-palette" id="gen-mood-palette">
+              <!-- Colors populated by JS -->
+            </div>
+          </div>
+          <div class="gen-mood-keywords">
+            <h4>&#10024; AI Mood Keywords</h4>
+            <div class="gen-mood-tags" id="gen-mood-tags">
+              <!-- Tags populated by JS -->
+            </div>
+          </div>
+          <div class="gen-mood-pinned-count">
+            <span id="gen-pinned-count">0</span> photos pinned to moodboard
+          </div>
+        </div>
+
+        <div class="gen-nav">
+          <button class="btn-secondary" onclick="genPrevStep(1)">&larr; Back</button>
+          <button class="btn-primary" onclick="genNextStep(3)">Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3: AI Brand Config ===== -->
+      <div class="gen-panel" id="gen-step-3" style="display:none">
+        <div class="gen-panel-grid">
+          <!-- Left: AI-Generated Config -->
+          <div class="gen-form-card">
+            <div class="gen-ai-badge">&#10024; AI-Generated Brand Configuration</div>
+            <h2 id="gen-config-title">Miami &mdash; Brand Config</h2>
+            <p class="subtitle">AI analyzed city data and suggests the following brand setup. Adjust as needed.</p>
+
+            <div class="gen-field">
+              <label>Accent Color</label>
+              <div class="gen-color-row">
+                <div class="gen-color-option active" data-color="#FF6B35" onclick="selectGenColor(this)" style="background:#FF6B35" title="Miami Sunset"></div>
+                <div class="gen-color-option" data-color="#00B4D8" onclick="selectGenColor(this)" style="background:#00B4D8" title="Ocean Blue"></div>
+                <div class="gen-color-option" data-color="#E91E8C" onclick="selectGenColor(this)" style="background:#E91E8C" title="Art Deco Pink"></div>
+                <div class="gen-color-option" data-color="#2EC4B6" onclick="selectGenColor(this)" style="background:#2EC4B6" title="Tropical Teal"></div>
+                <span class="gen-color-label" id="gen-color-label">Miami Sunset</span>
+              </div>
+              <span class="gen-hint">AI picked based on: city flag colors, cultural associations, contrast with Via Blue</span>
+            </div>
+
+            <div class="gen-field">
+              <label>City Landmark / Icon</label>
+              <div class="gen-icon-grid">
+                <div class="gen-icon-opt active" onclick="selectGenIcon(this)" data-icon="&#127956;" data-label="Miami Beach">
+                  <span class="gen-icon-emoji">&#127956;</span>
+                  <span>Miami Beach</span>
+                </div>
+                <div class="gen-icon-opt" onclick="selectGenIcon(this)" data-icon="&#127796;" data-label="Palm Tree">
+                  <span class="gen-icon-emoji">&#127796;</span>
+                  <span>Palm Tree</span>
+                </div>
+                <div class="gen-icon-opt" onclick="selectGenIcon(this)" data-icon="&#127751;" data-label="Skyline">
+                  <span class="gen-icon-emoji">&#127751;</span>
+                  <span>Skyline</span>
+                </div>
+                <div class="gen-icon-opt" onclick="selectGenIcon(this)" data-icon="&#127754;" data-label="Ocean Wave">
+                  <span class="gen-icon-emoji">&#127754;</span>
+                  <span>Ocean Wave</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="gen-field">
+              <label>Suggested Headlines</label>
+              <div class="gen-headline-list">
+                <div class="gen-headline-opt active" onclick="selectGenHeadline(this)">
+                  <input type="radio" name="gen-headline" checked>
+                  <span>Your ride is going autonomous in Miami</span>
+                </div>
+                <div class="gen-headline-opt" onclick="selectGenHeadline(this)">
+                  <input type="radio" name="gen-headline">
+                  <span>Miami, meet your new ride</span>
+                </div>
+                <div class="gen-headline-opt" onclick="selectGenHeadline(this)">
+                  <input type="radio" name="gen-headline">
+                  <span>The future of Miami transit is here</span>
+                </div>
+              </div>
+              <button class="ai-suggest-btn" style="margin-top:8px">&#10024; Regenerate Headlines</button>
+            </div>
+
+            <div class="gen-field">
+              <label>Copy Language &amp; Tone</label>
+              <div class="gen-tone-indicator">
+                <div class="gen-tone-bar">
+                  <div class="gen-tone-fill" style="width:75%"></div>
+                </div>
+                <div class="gen-tone-labels">
+                  <span>Formal</span>
+                  <span>Friendly</span>
+                </div>
+              </div>
+              <span class="gen-hint">Via B2C rider communication tone &mdash; warm, approachable, clear</span>
+            </div>
+          </div>
+
+          <!-- Right: Live Preview -->
+          <div class="gen-preview-card">
+            <h3>Live Preview</h3>
+            <div class="gen-live-preview" id="gen-live-preview">
+              <div class="gen-preview-mini-poster" id="gen-mini-poster">
+                <div class="gen-mini-hero" style="background:linear-gradient(170deg,#FF6B35,#00a8e2)">
+                  <div class="gen-mini-badge">via + waymo</div>
+                  <div class="gen-mini-icon" id="gen-preview-icon">&#127956;</div>
+                  <div class="gen-mini-headline" id="gen-preview-headline">Your ride is going<br>autonomous in Miami</div>
+                </div>
+                <div class="gen-mini-body">
+                  <div class="gen-mini-steps">
+                    <span>1. Book</span>
+                    <span>2. Walk to stop</span>
+                    <span>3. Ride</span>
+                  </div>
+                </div>
+                <div class="gen-mini-footer">
+                  <span style="color:#00a8e2;font-weight:700;font-size:11px">via</span>
+                  <span style="color:#94a3b8;font-size:8px">powered by waymo</span>
+                </div>
+              </div>
+              <div class="gen-preview-label">Bus Stop Poster &mdash; A0</div>
+
+              <div class="gen-preview-mini-social" id="gen-mini-social">
+                <div class="gen-social-mini-bg" style="background:linear-gradient(135deg,#FF6B35,#cc5529)">
+                  <span class="gen-social-mini-icon" id="gen-preview-social-icon">&#127956;</span>
+                  <span class="gen-social-mini-text">Miami, meet<br>your new ride.</span>
+                  <span class="gen-social-mini-cta">Download &rarr;</span>
+                </div>
+              </div>
+              <div class="gen-preview-label">Social Media &mdash; IG Square</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gen-nav">
+          <button class="btn-secondary" onclick="genPrevStep(2)">&larr; Back</button>
+          <button class="btn-primary" onclick="genNextStep(4)">Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 4: Select Materials ===== -->
+      <div class="gen-panel" id="gen-step-4" style="display:none">
+        <div class="gen-form-card" style="max-width:720px;margin:0 auto">
+          <h2>Select Materials to Generate</h2>
+          <p class="subtitle">Choose which templates AI should generate for <strong id="gen-mat-city">Miami</strong>. You can always add more later.</p>
+
+          <div class="gen-mat-grid">
+            <div class="gen-mat-item checked" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:linear-gradient(135deg,#00a8e2,#005f8a)">
+                <span style="color:white;font-size:20px">&#128196;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>Bus Stop Poster</h4>
+                <p>A0 / A1 / A2 &middot; Launch campaign</p>
+              </div>
+              <span class="gen-mat-time">~8 sec</span>
+            </div>
+
+            <div class="gen-mat-item checked" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:linear-gradient(135deg,#00a8e2,#0ea5e9)">
+                <span style="color:white;font-size:20px">&#128444;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>City Billboard</h4>
+                <p>Highway &middot; Digital &middot; Bus shelter</p>
+              </div>
+              <span class="gen-mat-time">~6 sec</span>
+            </div>
+
+            <div class="gen-mat-item checked" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">
+                <span style="color:white;font-size:20px">&#128241;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>Social Media Kit</h4>
+                <p>IG &middot; X &middot; LinkedIn &middot; Facebook</p>
+              </div>
+              <span class="gen-mat-time">~12 sec</span>
+            </div>
+
+            <div class="gen-mat-item" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:#0f172a">
+                <span style="color:#00a8e2;font-size:20px">&#128187;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>In-Vehicle Screen UI</h4>
+                <p>Trip info &middot; Safety &middot; Arrival</p>
+              </div>
+              <span class="gen-mat-time">~10 sec</span>
+            </div>
+
+            <div class="gen-mat-item" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:#fffbeb;border:1px solid #fde68a">
+                <span style="font-size:20px">&#9888;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>Safety Notice Card</h4>
+                <p>In-vehicle &middot; Multi-language</p>
+              </div>
+              <span class="gen-mat-time">~4 sec</span>
+            </div>
+
+            <div class="gen-mat-item" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:#f8fafc;border:1px solid #e2e8f0">
+                <span style="font-size:20px">&#128652;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>Vehicle Wrap Design</h4>
+                <p>Bus exterior &middot; Van &middot; AV livery</p>
+              </div>
+              <span class="gen-mat-time">~15 sec</span>
+            </div>
+
+            <div class="gen-mat-item checked" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:linear-gradient(135deg,#00a8e2,#7dd3fc)">
+                <span style="color:white;font-size:20px">&#128204;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>AV Stop Signage</h4>
+                <p>Pickup zone &middot; Dropoff &middot; Wayfinding</p>
+              </div>
+              <span class="gen-mat-time">~5 sec</span>
+            </div>
+
+            <div class="gen-mat-item" onclick="toggleGenMat(this)">
+              <div class="gen-mat-check">&#10003;</div>
+              <div class="gen-mat-thumb" style="background:#f0f9ff">
+                <span style="font-size:20px">&#128231;</span>
+              </div>
+              <div class="gen-mat-info">
+                <h4>Email Templates</h4>
+                <p>Welcome &middot; Launch &middot; Newsletter</p>
+              </div>
+              <span class="gen-mat-time">~8 sec</span>
+            </div>
+          </div>
+
+          <div class="gen-mat-summary">
+            <span id="gen-mat-count">4 materials selected</span>
+            <span id="gen-mat-est">Estimated: ~31 seconds</span>
+          </div>
+        </div>
+
+        <div class="gen-nav">
+          <button class="btn-secondary" onclick="genPrevStep(3)">&larr; Back</button>
+          <button class="btn-primary" onclick="genNextStep(5)">&#10024; Generate Materials &rarr;</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 5: Generate & Review ===== -->
+      <div class="gen-panel" id="gen-step-5" style="display:none">
+
+        <!-- Generation Progress (shown during generation) -->
+        <div id="gen-progress-panel">
+          <div class="gen-progress-header">
+            <div class="gen-progress-spinner"></div>
+            <div>
+              <h2>Generating Miami Material Pack...</h2>
+              <p class="subtitle" id="gen-progress-sub">AI is creating brand-compliant materials across all selected templates.</p>
+            </div>
+          </div>
+
+          <div class="gen-progress-list" id="gen-progress-list">
+            <div class="gen-progress-item" data-mat="poster">
+              <div class="gen-prog-icon">&#128196;</div>
+              <div class="gen-prog-info">
+                <span class="gen-prog-name">Bus Stop Poster</span>
+                <div class="gen-prog-bar"><div class="gen-prog-fill" style="width:0%"></div></div>
+              </div>
+              <span class="gen-prog-status">Waiting...</span>
+            </div>
+            <div class="gen-progress-item" data-mat="billboard">
+              <div class="gen-prog-icon">&#128444;</div>
+              <div class="gen-prog-info">
+                <span class="gen-prog-name">City Billboard</span>
+                <div class="gen-prog-bar"><div class="gen-prog-fill" style="width:0%"></div></div>
+              </div>
+              <span class="gen-prog-status">Waiting...</span>
+            </div>
+            <div class="gen-progress-item" data-mat="social">
+              <div class="gen-prog-icon">&#128241;</div>
+              <div class="gen-prog-info">
+                <span class="gen-prog-name">Social Media Kit</span>
+                <div class="gen-prog-bar"><div class="gen-prog-fill" style="width:0%"></div></div>
+              </div>
+              <span class="gen-prog-status">Waiting...</span>
+            </div>
+            <div class="gen-progress-item" data-mat="signage">
+              <div class="gen-prog-icon">&#128204;</div>
+              <div class="gen-prog-info">
+                <span class="gen-prog-name">AV Stop Signage</span>
+                <div class="gen-prog-bar"><div class="gen-prog-fill" style="width:0%"></div></div>
+              </div>
+              <span class="gen-prog-status">Waiting...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Grid (shown after generation) -->
+        <div id="gen-review-panel" style="display:none">
+          <div class="gen-review-header">
+            <div>
+              <h2>&#9989; Miami Material Pack Complete</h2>
+              <p class="subtitle">4 materials generated in 14 seconds. Review and fine-tune below.</p>
+            </div>
+            <div class="gen-review-actions">
+              <button class="btn-secondary" onclick="genNextStep(4)">+ Add More</button>
+              <button class="btn-primary">&#128229; Export All (.zip)</button>
+            </div>
+          </div>
+
+          <div class="gen-review-grid">
+            <!-- Poster -->
+            <div class="gen-review-card" onclick="navigateTo('via-av-poster')">
+              <div class="gen-review-thumb">
+                <div class="gen-rev-poster" style="background:linear-gradient(170deg,#FF6B35,#00a8e2)">
+                  <span style="color:rgba(255,255,255,0.6);font-size:7px;font-weight:600">VIA + WAYMO</span>
+                  <span style="font-size:28px">&#127956;</span>
+                  <span style="color:white;font-size:10px;font-weight:700;line-height:1.2">Your ride is going<br>autonomous in Miami</span>
+                </div>
+              </div>
+              <div class="gen-review-info">
+                <h4>Bus Stop Poster</h4>
+                <div class="gen-review-meta">
+                  <span class="gen-review-format">A0 &middot; A1 &middot; A2</span>
+                  <span class="gen-review-status done">&#9989; Ready</span>
+                </div>
+                <div class="gen-review-actions-sm">
+                  <span class="gen-act-link">Edit</span>
+                  <span class="gen-act-link">Export</span>
+                  <span class="gen-act-link">Duplicate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Billboard -->
+            <div class="gen-review-card">
+              <div class="gen-review-thumb">
+                <div class="gen-rev-billboard" style="background:linear-gradient(135deg,#FF6B35,#00a8e2)">
+                  <div style="flex:1;padding:8px">
+                    <span style="color:white;font-size:10px;font-weight:700;line-height:1.2;display:block">THE FUTURE<br>OF MIAMI<br>TRANSIT</span>
+                    <span style="color:rgba(255,255,255,0.5);font-size:7px;display:block;margin-top:4px">via</span>
+                  </div>
+                  <div style="width:35%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
+                    <span style="font-size:24px">&#127956;</span>
+                  </div>
+                </div>
+              </div>
+              <div class="gen-review-info">
+                <h4>City Billboard</h4>
+                <div class="gen-review-meta">
+                  <span class="gen-review-format">Highway &middot; Digital &middot; Shelter</span>
+                  <span class="gen-review-status done">&#9989; Ready</span>
+                </div>
+                <div class="gen-review-actions-sm">
+                  <span class="gen-act-link">Edit</span>
+                  <span class="gen-act-link">Export</span>
+                  <span class="gen-act-link">Duplicate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="gen-review-card">
+              <div class="gen-review-thumb">
+                <div class="gen-rev-social">
+                  <div style="width:48%;aspect-ratio:1;background:linear-gradient(135deg,#FF6B35,#cc5529);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px">
+                    <span style="font-size:16px">&#127956;</span>
+                    <span style="color:white;font-size:6px;font-weight:700;text-align:center;margin-top:2px">MIAMI, MEET<br>YOUR NEW RIDE</span>
+                  </div>
+                  <div style="width:48%;display:flex;flex-direction:column;gap:4px">
+                    <div style="flex:1;background:#0f172a;border-radius:4px;display:flex;align-items:center;justify-content:center">
+                      <span style="color:#FF6B35;font-size:5px;font-weight:600;text-align:center">AUTONOMOUS<br>TRANSIT IS HERE</span>
+                    </div>
+                    <div style="flex:1;background:#f0f9ff;border-radius:4px;display:flex;align-items:center;justify-content:center">
+                      <span style="color:#0f172a;font-size:5px;font-weight:600;text-align:center">Miami &middot; Download<br>the app today</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="gen-review-info">
+                <h4>Social Media Kit</h4>
+                <div class="gen-review-meta">
+                  <span class="gen-review-format">4 formats &middot; 8 variants</span>
+                  <span class="gen-review-status done">&#9989; Ready</span>
+                </div>
+                <div class="gen-review-actions-sm">
+                  <span class="gen-act-link">Edit</span>
+                  <span class="gen-act-link">Export</span>
+                  <span class="gen-act-link">Duplicate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- AV Signage -->
+            <div class="gen-review-card">
+              <div class="gen-review-thumb">
+                <div class="gen-rev-signage">
+                  <div style="width:48px;height:48px;background:#FF6B35;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:6px">
+                    <span style="color:white;font-size:18px">&#9679;</span>
+                  </div>
+                  <span style="font-size:9px;font-weight:700;color:#0f172a">AV PICKUP ZONE</span>
+                  <span style="font-size:6px;color:#64748b;margin-top:2px">Stand here for autonomous vehicle</span>
+                </div>
+              </div>
+              <div class="gen-review-info">
+                <h4>AV Stop Signage</h4>
+                <div class="gen-review-meta">
+                  <span class="gen-review-format">Pickup &middot; Dropoff &middot; Wayfinding</span>
+                  <span class="gen-review-status done">&#9989; Ready</span>
+                </div>
+                <div class="gen-review-actions-sm">
+                  <span class="gen-act-link">Edit</span>
+                  <span class="gen-act-link">Export</span>
+                  <span class="gen-act-link">Duplicate</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand Compliance Check -->
+          <div class="gen-compliance-panel">
+            <h3>&#128274; Brand Compliance Check</h3>
+            <div class="gen-compliance-list">
+              <div class="gen-compliance-item pass">
+                <span>&#9989;</span> Via logo placement &mdash; minimum size, correct position
+              </div>
+              <div class="gen-compliance-item pass">
+                <span>&#9989;</span> Waymo co-branding ratio 1:0.6 enforced
+              </div>
+              <div class="gen-compliance-item pass">
+                <span>&#9989;</span> Color contrast WCAG AA &mdash; all text passes
+              </div>
+              <div class="gen-compliance-item pass">
+                <span>&#9989;</span> Safety copy includes Florida AV disclosure requirements
+              </div>
+              <div class="gen-compliance-item pass">
+                <span>&#9989;</span> Typography &mdash; Inter font family, correct weights
+              </div>
+            </div>
+          </div>
+
+          <!-- Next City Prompt -->
+          <div class="gen-next-city">
+            <span>&#127881;</span>
+            <div>
+              <h4>Miami pack complete! Generate for the next city?</h4>
+              <p>You can batch-generate for multiple cities &mdash; each pack takes ~14 seconds.</p>
+            </div>
+            <button class="btn-primary" onclick="genReset()">&#10024; Start New City</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== PLACEHOLDER VIEWS ==================== -->
+    <section id="view-projects" class="view">
+      <div class="view-header"><div><h1>Projects</h1><p class="subtitle">All active and archived projects across brands</p></div></div>
+      <div class="placeholder-content"><span>&#128194;</span><p>Project workspace &mdash; coming in V2</p></div>
+    </section>
+
+    <section id="view-insights" class="view">
+      <div class="view-header"><div><h1>Insights</h1><p class="subtitle">Usage analytics, brand compliance, efficiency metrics</p></div></div>
+      <div class="placeholder-content"><span>&#128202;</span><p>Analytics dashboard &mdash; coming in V2</p></div>
+    </section>
+
+    <!-- ==================== CITYMAPPER SOCIAL MEDIA EDITOR ==================== -->
+    <section id="view-cm-social" class="view">
+      <div class="view-header compact">
+        <div>
+          <div class="brand-tag cm-tag">Citymapper</div>
+          <h1>Social Media Kit</h1>
+          <p class="subtitle">City launch campaign &middot; 6 formats &middot; AI-powered city adaptation</p>
+        </div>
+        <div class="editor-actions">
+          <button class="btn-secondary">Export All</button>
+          <button class="btn-primary" style="background:#37AB2F">
+            <span>&#10024;</span> Generate for New City
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <!-- LEFT: Social Preview -->
+        <div class="editor-preview">
+          <div class="city-selector">
+            <button class="city-btn active" data-city="london" onclick="switchSocialCity('london')">&#127468;&#127463; London</button>
+            <button class="city-btn" data-city="nyc" onclick="switchSocialCity('nyc')">&#127466;&#127480; New York</button>
+            <button class="city-btn" data-city="paris" onclick="switchSocialCity('paris')">&#127467;&#127479; Paris</button>
+          </div>
+
+          <!-- Format Tabs -->
+          <div class="av-tabs" style="margin-bottom:20px">
+            <button class="av-tab active" style="--active-color:#37AB2F" onclick="switchSocialFormat('ig-square')">IG Square</button>
+            <button class="av-tab" onclick="switchSocialFormat('ig-story')">IG Story</button>
+            <button class="av-tab" onclick="switchSocialFormat('twitter')">X / Twitter</button>
+            <button class="av-tab" onclick="switchSocialFormat('linkedin')">LinkedIn</button>
+          </div>
+
+          <!-- Social Post Preview -->
+          <div class="social-preview-large" id="social-preview">
+            <div class="social-post" id="social-post">
+              <div class="social-post-bg" id="social-bg" style="background:linear-gradient(135deg,#37AB2F,#2d8a26)">
+                <div class="social-post-content">
+                  <div class="social-cm-logo">
+                    <svg width="28" height="28" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.2)"/><circle cx="12" cy="20" r="3" fill="white"/><polygon points="20,12 28,20 20,28" fill="white"/><circle cx="30" cy="20" r="2.5" fill="white"/></svg>
+                  </div>
+                  <div class="social-post-city-icon" id="social-city-icon">&#128655;</div>
+                  <h2 class="social-post-headline" id="social-headline">London,<br>now even more usable.</h2>
+                  <p class="social-post-sub" id="social-subtext">Real-time transit, AI-powered routes, and your city in your pocket. Download Citymapper.</p>
+                  <div class="social-post-cta">
+                    <span>Download Free</span>
+                    <span>&rarr;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Controls -->
+        <div class="editor-controls">
+          <div class="control-section">
+            <div class="control-header">
+              <span class="lock-icon">&#128274;</span>
+              <h4>Locked Elements</h4>
+              <span class="control-badge locked">Brand enforced</span>
+            </div>
+            <div class="locked-items">
+              <div class="locked-item">
+                <span class="locked-label">Citymapper Logo</span>
+                <span class="locked-value">Top-left, min 24px</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Brand Green</span>
+                <span class="locked-value">#37AB2F &mdash; Primary BG</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Font</span>
+                <span class="locked-value">Proxima Nova Soft</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">CTA Button Style</span>
+                <span class="locked-value">White pill, brand copy</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <div class="control-header">
+              <span class="unlock-icon">&#10024;</span>
+              <h4>Variable Elements</h4>
+              <span class="control-badge variable">AI-assisted</span>
+            </div>
+
+            <div class="control-field">
+              <label>Headline</label>
+              <input type="text" id="social-ctrl-headline" value="London, now even more usable." class="control-input">
+              <button class="ai-suggest-btn" style="background:#e8f5e6;color:#2d8a26" onclick="suggestSocialHeadlines()">&#10024; AI Suggest</button>
+              <div class="ai-suggestions" id="social-headline-suggestions" style="display:none">
+                <div class="suggestion" onclick="pickSocialSuggestion(this)">London, get there the best way.</div>
+                <div class="suggestion" onclick="pickSocialSuggestion(this)">Every route. Every mode. One app.</div>
+                <div class="suggestion" onclick="pickSocialSuggestion(this)">Your London. Now in your pocket.</div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>City Transit Icon</label>
+              <div class="illus-options">
+                <div class="illus-opt active"><span>&#128655;</span><span>Double-decker</span></div>
+                <div class="illus-opt"><span>&#128647;</span><span>Tube</span></div>
+                <div class="illus-opt"><span>&#128675;</span><span>Thames</span></div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>Background Gradient</label>
+              <div class="color-options">
+                <div class="color-opt active" style="background:#37AB2F" title="Citymapper Green"></div>
+                <div class="color-opt" style="background:#1a5c17" title="Dark Forest"></div>
+                <div class="color-opt" style="background:#0f172a" title="Night Mode"></div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>Subtext</label>
+              <textarea class="control-input" style="height:60px;resize:none" id="social-ctrl-sub">Real-time transit, AI-powered routes, and your city in your pocket. Download Citymapper.</textarea>
+            </div>
+          </div>
+
+          <div class="control-section ai-panel">
+            <div class="control-header">
+              <span>&#128161;</span>
+              <h4>AI Insights</h4>
+            </div>
+            <div class="ai-insights">
+              <div class="insight-item">
+                <span class="insight-icon">&#128202;</span>
+                <p>London posts with the &#128655; bus icon get 34% more engagement. <span class="insight-check">&#9989;</span></p>
+              </div>
+              <div class="insight-item">
+                <span class="insight-icon">&#127760;</span>
+                <p>Best posting time for London: Tue/Thu 8am GMT (commute hour)</p>
+              </div>
+              <div class="insight-item">
+                <span class="insight-icon">&#128196;</span>
+                <p>Tone check: Copy matches Citymapper voice (witty + direct). <span class="insight-check">&#9989;</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CITYMAPPER BILLBOARD EDITOR ==================== -->
+    <section id="view-cm-billboard" class="view">
+      <div class="view-header compact">
+        <div>
+          <div class="brand-tag cm-tag">Citymapper</div>
+          <h1>City Billboard</h1>
+          <p class="subtitle">Outdoor advertising &middot; Transit station &middot; Digital screen</p>
+        </div>
+        <div class="editor-actions">
+          <button class="btn-secondary">Export All</button>
+          <button class="btn-primary" style="background:#37AB2F">
+            <span>&#10024;</span> Generate for New City
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="editor-preview">
+          <div class="city-selector">
+            <button class="city-btn active" data-city="london" onclick="switchBBCity('london')">&#127468;&#127463; London</button>
+            <button class="city-btn" data-city="nyc" onclick="switchBBCity('nyc')">&#127466;&#127480; New York</button>
+            <button class="city-btn" data-city="paris" onclick="switchBBCity('paris')">&#127467;&#127479; Paris</button>
+          </div>
+
+          <!-- Billboard Preview -->
+          <div class="billboard-preview-large">
+            <div class="bb-frame">
+              <div class="bb-content" id="bb-content" style="background:linear-gradient(135deg,#37AB2F,#1a5c17)">
+                <div class="bb-left">
+                  <div class="bb-logo">
+                    <svg width="32" height="32" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/><circle cx="12" cy="20" r="3" fill="white"/><polygon points="20,12 28,20 20,28" fill="white"/><circle cx="30" cy="20" r="2.5" fill="white"/></svg>
+                  </div>
+                  <h2 class="bb-headline" id="bb-headline">Get there<br>the best way.</h2>
+                  <p class="bb-sub" id="bb-sub">London's #1 transit app. Every bus, tube, train, bike &mdash; one app.</p>
+                  <div class="bb-cta">Download Free &rarr;</div>
+                </div>
+                <div class="bb-right">
+                  <div class="bb-phone">
+                    <div class="bb-phone-screen">
+                      <div style="background:#37AB2F;height:20%;padding:6px">
+                        <span style="color:white;font-size:8px;font-weight:600">citymapper</span>
+                      </div>
+                      <div style="padding:6px;flex:1;background:white">
+                        <div style="background:#e8f5e6;height:12px;border-radius:3px;margin-bottom:4px"></div>
+                        <div style="background:#f1f5f9;height:8px;border-radius:2px;margin-bottom:3px"></div>
+                        <div style="background:#f1f5f9;height:8px;border-radius:2px;width:70%;margin-bottom:6px"></div>
+                        <div style="background:#37AB2F;height:16px;border-radius:4px"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bb-city-icon" id="bb-city-icon">&#128655;</div>
+                </div>
+              </div>
+            </div>
+            <div class="bb-context">
+              <span>&#128205; Shown: Underground station digital screen &middot; 16:9 landscape &middot; London</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-controls">
+          <div class="control-section">
+            <div class="control-header">
+              <span class="lock-icon">&#128274;</span>
+              <h4>Locked Elements</h4>
+              <span class="control-badge locked">Brand enforced</span>
+            </div>
+            <div class="locked-items">
+              <div class="locked-item">
+                <span class="locked-label">Citymapper Logo</span>
+                <span class="locked-value">Top-left, white on green</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">Green Background</span>
+                <span class="locked-value">#37AB2F gradient</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">App Preview</span>
+                <span class="locked-value">Phone mockup required</span>
+              </div>
+              <div class="locked-item">
+                <span class="locked-label">CTA</span>
+                <span class="locked-value">"Download Free" &mdash; locked copy</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <div class="control-header">
+              <span class="unlock-icon">&#10024;</span>
+              <h4>Variable Elements</h4>
+              <span class="control-badge variable">AI-assisted</span>
+            </div>
+
+            <div class="control-field">
+              <label>Headline</label>
+              <input type="text" value="Get there the best way." class="control-input" id="bb-ctrl-headline">
+              <button class="ai-suggest-btn" style="background:#e8f5e6;color:#2d8a26">&#10024; AI Suggest</button>
+            </div>
+
+            <div class="control-field">
+              <label>Subtext</label>
+              <input type="text" value="London's #1 transit app. Every bus, tube, train, bike — one app." class="control-input" id="bb-ctrl-sub">
+            </div>
+
+            <div class="control-field">
+              <label>City Transit Icon</label>
+              <div class="illus-options">
+                <div class="illus-opt active"><span>&#128655;</span><span>Bus</span></div>
+                <div class="illus-opt"><span>&#128647;</span><span>Tube</span></div>
+                <div class="illus-opt"><span>&#128690;</span><span>Bike</span></div>
+              </div>
+            </div>
+
+            <div class="control-field">
+              <label>Format</label>
+              <select class="control-select">
+                <option>16:9 Landscape &mdash; Digital screen</option>
+                <option>4:1 Banner &mdash; Highway billboard</option>
+                <option>9:16 Portrait &mdash; Bus shelter</option>
+                <option>1:1 Square &mdash; Station pillar</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-section ai-panel">
+            <div class="control-header"><span>&#128161;</span><h4>AI Insights</h4></div>
+            <div class="ai-insights">
+              <div class="insight-item">
+                <span class="insight-icon">&#128205;</span>
+                <p>London Underground has 272 stations. High-traffic stations for digital placement: King's Cross, Victoria, Oxford Circus.</p>
+              </div>
+              <div class="insight-item">
+                <span class="insight-icon">&#127912;</span>
+                <p>NYC version auto-switches to yellow palette + subway icon + "Every subway, bus, ferry" copy.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-cm-foundation" class="view">
+      <div class="view-header"><div><div class="brand-tag cm-tag">Citymapper</div><h1>Brand Foundation</h1><p class="subtitle">The Citymapper DNA &mdash; witty, direct, transit-geeky</p></div></div>
+      <div class="placeholder-content"><span>&#127912;</span><p>Citymapper brand foundation &mdash; Logo, Color, Typography, Illustration, Voice & Tone</p></div>
+    </section>
+
+    <section id="view-cm-templates" class="view">
+      <div class="view-header"><div><div class="brand-tag cm-tag">Citymapper</div><h1>Template Library</h1><p class="subtitle">43 templates for app assets, city launches, social campaigns</p></div></div>
+      <div class="placeholder-content"><span>&#128196;</span><p>Citymapper templates &mdash; App Store, City Launch, Social, Partner</p></div>
+    </section>
+
+    <section id="view-cm-cities" class="view">
+      <div class="view-header"><div><div class="brand-tag cm-tag">Citymapper</div><h1>City Manager</h1><p class="subtitle">40+ cities with unique transit icons and local character</p></div></div>
+      <div class="placeholder-content"><span>&#127760;</span><p>Citymapper city manager &mdash; 40+ cities</p></div>
+    </section>
+
+    <section id="view-remix-foundation" class="view">
+      <div class="view-header"><div><div class="brand-tag remix-tag">Remix</div><h1>Brand Foundation</h1><p class="subtitle">Data visualization, map design, professional tool aesthetic</p></div></div>
+      <div class="placeholder-content"><span>&#127912;</span><p>Remix brand foundation &mdash; Data Viz System, Map Design, Typography</p></div>
+    </section>
+
+    <section id="view-remix-templates" class="view">
+      <div class="view-header"><div><div class="brand-tag remix-tag">Remix</div><h1>Template Library</h1><p class="subtitle">28 templates for product marketing, training, B2G sales</p></div></div>
+      <div class="placeholder-content"><span>&#128196;</span><p>Remix templates &mdash; Product Marketing, User Education, B2G Sales, Release Notes</p></div>
+    </section>
+
+    <section id="view-remix-agencies" class="view">
+      <div class="view-header"><div><div class="brand-tag remix-tag">Remix</div><h1>Agency Manager</h1><p class="subtitle">450+ transit agencies with custom materials</p></div></div>
+      <div class="placeholder-content"><span>&#127963;</span><p>Remix agency manager &mdash; 450+ agencies</p></div>
+    </section>
+
+    <!-- Placeholder views for template sub-pages -->
+    <section id="view-via-templates-rider" class="view">
+      <div class="view-header"><div><div class="brand-tag via-tag">Via</div><h1>Rider Growth Templates</h1><p class="subtitle">48 templates &middot; B2C communications across all touchpoints</p></div></div>
+      <div class="placeholder-content"><span>&#128652;</span><p>New City Launch &middot; Daily Communication &middot; Wayfinding &middot; Rider Education</p></div>
+    </section>
+
+    <section id="view-via-templates-gov" class="view">
+      <div class="view-header"><div><div class="brand-tag via-tag">Via</div><h1>GovTech Sales Templates</h1><p class="subtitle">35 templates &middot; B2G go-to-market materials</p></div></div>
+      <div class="placeholder-content"><span>&#127963;</span><p>Whitepapers &middot; Case Studies &middot; Event Materials &middot; Mayors Council</p></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
