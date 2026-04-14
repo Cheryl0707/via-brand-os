@@ -216,9 +216,6 @@
           <p class="subtitle">Via Brand OS &mdash; 3 brands, 750+ cities, one system.</p>
         </div>
         <div class="editor-actions">
-          <button class="btn-primary" onclick="navigateTo('city-generator')">
-            <span>&#10024;</span> Generate City Pack
-          </button>
           <button class="btn-secondary" onclick="openCommandPalette()">
             &#8984;K Search
           </button>
@@ -302,23 +299,23 @@
         <div class="dash-panel">
           <h3>Active Projects</h3>
           <div class="project-list">
-            <div class="project-item" onclick="navigateTo('via-av-poster')">
+            <div class="project-item" onclick="navigateTo('project-waymo')">
               <span class="brand-dot via"></span>
               <div class="project-info">
-                <span class="project-name">Waymo AV Expansion &mdash; Austin/Denver/Seattle</span>
-                <span class="project-meta">Via &middot; AV Launch Campaign &middot; 3 cities</span>
+                <span class="project-name">Waymo AV Expansion &mdash; New York</span>
+                <span class="project-meta">Via &middot; AV Launch Campaign &middot; NYC</span>
               </div>
               <span class="project-status status-progress">In Progress</span>
             </div>
-            <div class="project-item">
+            <div class="project-item" onclick="navigateTo('project-mayor')">
               <span class="brand-dot via"></span>
               <div class="project-info">
-                <span class="project-name">Q1 2026 Earnings Report</span>
-                <span class="project-meta">Via &middot; Investor Relations &middot; 30 slides</span>
+                <span class="project-name">Mayor Outreach Campaign</span>
+                <span class="project-meta">Via &middot; GovTech / B2G &middot; Q3 2026</span>
               </div>
               <span class="project-status status-review">In Review</span>
             </div>
-            <div class="project-item">
+            <div class="project-item" onclick="navigateTo('project-coming-soon')">
               <span class="brand-dot cm"></span>
               <div class="project-info">
                 <span class="project-name">West Midlands Launch</span>
@@ -326,7 +323,7 @@
               </div>
               <span class="project-status status-progress">In Progress</span>
             </div>
-            <div class="project-item">
+            <div class="project-item" onclick="navigateTo('project-coming-soon')">
               <span class="brand-dot remix"></span>
               <div class="project-info">
                 <span class="project-name">Ridership Modeling Feature Launch</span>
@@ -1860,12 +1857,337 @@
 
     <!-- ==================== PLACEHOLDER VIEWS ==================== -->
     <section id="view-projects" class="view">
-      <iframe src="https://cheryl0707.github.io/via-launch-kit/" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:8px;"></iframe>
+      <div class="view-header">
+        <div>
+          <h1>Projects</h1>
+          <p class="subtitle">All active campaigns and launches across brands</p>
+        </div>
+        <button class="btn-secondary" style="opacity:0.5;cursor:default;">+ New Project</button>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="projects-tabs">
+        <button class="projects-tab active" onclick="switchProjectsTab('projects')">All Projects</button>
+        <button class="projects-tab" onclick="switchProjectsTab('toolkit')">Toolkit</button>
+      </div>
+
+      <!-- All Projects Content -->
+      <div id="projects-tab-projects" class="projects-tab-content">
+        <div class="projects-list">
+          <div class="projects-list-item" onclick="navigateTo('project-waymo')">
+            <div class="projects-list-icon via-bg">V</div>
+            <div class="projects-list-info">
+              <span class="projects-list-name">Waymo AV Expansion &mdash; New York</span>
+              <span class="projects-list-meta">Via &middot; AV Launch Campaign &middot; NYC &middot; 6 materials</span>
+            </div>
+            <span class="project-status status-progress">In Progress</span>
+            <span class="projects-list-arrow">&rsaquo;</span>
+          </div>
+
+          <div class="projects-list-item" onclick="navigateTo('project-mayor')">
+            <div class="projects-list-icon via-bg">V</div>
+            <div class="projects-list-info">
+              <span class="projects-list-name">Mayor Outreach Campaign</span>
+              <span class="projects-list-meta">Via &middot; GovTech / B2G &middot; Q3 2026 &middot; 5 materials</span>
+            </div>
+            <span class="project-status status-review">In Review</span>
+            <span class="projects-list-arrow">&rsaquo;</span>
+          </div>
+
+          <div class="projects-list-item" onclick="navigateTo('project-coming-soon')">
+            <div class="projects-list-icon cm-bg">C</div>
+            <div class="projects-list-info">
+              <span class="projects-list-name">West Midlands Launch</span>
+              <span class="projects-list-meta">Citymapper &middot; City Launch &middot; Cross-brand</span>
+            </div>
+            <span class="project-status status-progress">In Progress</span>
+            <span class="projects-list-arrow">&rsaquo;</span>
+          </div>
+
+          <div class="projects-list-item" onclick="navigateTo('project-coming-soon')">
+            <div class="projects-list-icon remix-bg">R</div>
+            <div class="projects-list-info">
+              <span class="projects-list-name">Ridership Modeling Feature Launch</span>
+              <span class="projects-list-meta">Remix &middot; Product Launch &middot; Multi-channel</span>
+            </div>
+            <span class="project-status status-done">Completed</span>
+            <span class="projects-list-arrow">&rsaquo;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolkit Content -->
+      <div id="projects-tab-toolkit" class="projects-tab-content" style="display:none;">
+        <div class="toolkit-grid">
+          <a class="toolkit-card toolkit-card-live" href="file:///Users/cheryl/Projects/via-social-gen-v3/index.html" target="_blank">
+            <div class="toolkit-card-icon">&#128247;</div>
+            <div class="toolkit-card-body">
+              <h3>Social Post Generator</h3>
+              <p>Create branded social media posts across platforms</p>
+            </div>
+            <div class="toolkit-card-footer">
+              <span class="toolkit-badge via-bg">Via</span>
+              <span class="toolkit-status toolkit-status-live">Live</span>
+            </div>
+          </a>
+
+          <div class="toolkit-card toolkit-card-soon">
+            <div class="toolkit-card-icon">&#127912;</div>
+            <div class="toolkit-card-body">
+              <h3>Design Studio</h3>
+              <p>Edit and customize templates with AI assistance</p>
+            </div>
+            <div class="toolkit-card-footer">
+              <span class="toolkit-status toolkit-status-soon">Coming Soon</span>
+            </div>
+          </div>
+
+          <div class="toolkit-card toolkit-card-soon">
+            <div class="toolkit-card-icon">&#128208;</div>
+            <div class="toolkit-card-body">
+              <h3>Asset Resizer</h3>
+              <p>Batch resize assets for multiple platforms</p>
+            </div>
+            <div class="toolkit-card-footer">
+              <span class="toolkit-status toolkit-status-soon">Coming Soon</span>
+            </div>
+          </div>
+
+          <div class="toolkit-card toolkit-card-soon">
+            <div class="toolkit-card-icon">&#9989;</div>
+            <div class="toolkit-card-body">
+              <h3>Brand Checker</h3>
+              <p>Validate materials against brand guidelines</p>
+            </div>
+            <div class="toolkit-card-footer">
+              <span class="toolkit-status toolkit-status-soon">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="view-insights" class="view">
       <div class="view-header"><div><h1>Insights</h1><p class="subtitle">Usage analytics, brand compliance, efficiency metrics</p></div></div>
       <div class="placeholder-content"><span>&#128202;</span><p>Analytics dashboard &mdash; coming in V2</p></div>
+    </section>
+
+    <!-- ==================== PROJECT DETAIL: WAYMO ==================== -->
+    <section id="view-project-waymo" class="view">
+      <a class="back-link" onclick="navigateTo('projects')">&larr; Back to Projects</a>
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Waymo AV Expansion &mdash; New York</h1>
+          <p class="subtitle">AV launch campaign for NYC market</p>
+        </div>
+      </div>
+
+      <!-- Campaign Meta -->
+      <div class="campaign-meta">
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Product</span>
+          <span class="campaign-meta-value">Autonomous Vehicles</span>
+        </div>
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Audience</span>
+          <span class="campaign-meta-value">NYC riders</span>
+        </div>
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Launch</span>
+          <span class="campaign-meta-value">Summer 2026</span>
+        </div>
+      </div>
+
+      <!-- Progress + Pipeline -->
+      <div class="campaign-progress-row">
+        <div class="progress-ring-wrap">
+          <svg viewBox="0 0 120 120" class="progress-ring-svg">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#00a8e2" stroke-width="10"
+              stroke-dasharray="326.7" stroke-dashoffset="196" stroke-linecap="round"
+              transform="rotate(-90 60 60)"/>
+            <text x="60" y="60" text-anchor="middle" dominant-baseline="central"
+              font-size="24" font-weight="700" fill="#0f172a">40%</text>
+          </svg>
+          <span class="progress-ring-label">Overall Progress</span>
+        </div>
+
+        <div class="pipeline-section">
+          <h3>Pipeline</h3>
+          <div class="pipeline-bar">
+            <div class="pipeline-phase done">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 1</span>
+              <span class="pipeline-phase-status">Strategy &amp; Brief</span>
+            </div>
+            <div class="pipeline-phase active">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 2</span>
+              <span class="pipeline-phase-status">Creative Production</span>
+            </div>
+            <div class="pipeline-phase pending">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 3</span>
+              <span class="pipeline-phase-status">Review &amp; Launch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Material Checklist -->
+      <div class="material-checklist">
+        <h3>Material Checklist</h3>
+        <table class="material-table">
+          <thead>
+            <tr><th>Material</th><th>Format</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LinkedIn Post</td>
+              <td>1200 &times; 627</td>
+              <td><span class="mat-status mat-review">In Review</span></td>
+            </tr>
+            <tr>
+              <td>Twitter / X Post</td>
+              <td>1200 &times; 675</td>
+              <td><span class="mat-status mat-progress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>Instagram Post</td>
+              <td>1080 &times; 1080</td>
+              <td><span class="mat-status mat-progress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>Instagram Story</td>
+              <td>1080 &times; 1920</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+            <tr>
+              <td>Bus Stop Poster</td>
+              <td>A0</td>
+              <td><span class="mat-status mat-review">In Review</span></td>
+            </tr>
+            <tr>
+              <td>Digital Billboard</td>
+              <td>16:9</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECT DETAIL: MAYOR ==================== -->
+    <section id="view-project-mayor" class="view">
+      <a class="back-link" onclick="navigateTo('projects')">&larr; Back to Projects</a>
+      <div class="view-header">
+        <div>
+          <div class="brand-tag via-tag">Via</div>
+          <h1>Mayor Outreach Campaign</h1>
+          <p class="subtitle">GovTech B2G outreach to city officials</p>
+        </div>
+      </div>
+
+      <!-- Campaign Meta -->
+      <div class="campaign-meta">
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Product</span>
+          <span class="campaign-meta-value">GovTech / B2G</span>
+        </div>
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Audience</span>
+          <span class="campaign-meta-value">City mayors &amp; transit officials</span>
+        </div>
+        <div class="campaign-meta-item">
+          <span class="campaign-meta-label">Launch</span>
+          <span class="campaign-meta-value">Q3 2026</span>
+        </div>
+      </div>
+
+      <!-- Progress + Pipeline -->
+      <div class="campaign-progress-row">
+        <div class="progress-ring-wrap">
+          <svg viewBox="0 0 120 120" class="progress-ring-svg">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#00a8e2" stroke-width="10"
+              stroke-dasharray="326.7" stroke-dashoffset="245" stroke-linecap="round"
+              transform="rotate(-90 60 60)"/>
+            <text x="60" y="60" text-anchor="middle" dominant-baseline="central"
+              font-size="24" font-weight="700" fill="#0f172a">25%</text>
+          </svg>
+          <span class="progress-ring-label">Overall Progress</span>
+        </div>
+
+        <div class="pipeline-section">
+          <h3>Pipeline</h3>
+          <div class="pipeline-bar">
+            <div class="pipeline-phase active">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 1</span>
+              <span class="pipeline-phase-status">Strategy &amp; Brief</span>
+            </div>
+            <div class="pipeline-phase pending">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 2</span>
+              <span class="pipeline-phase-status">Creative Production</span>
+            </div>
+            <div class="pipeline-phase pending">
+              <div class="pipeline-phase-dot"></div>
+              <span class="pipeline-phase-label">Phase 3</span>
+              <span class="pipeline-phase-status">Review &amp; Launch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Material Checklist -->
+      <div class="material-checklist">
+        <h3>Material Checklist</h3>
+        <table class="material-table">
+          <thead>
+            <tr><th>Material</th><th>Format</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Presentation Deck</td>
+              <td>16:9</td>
+              <td><span class="mat-status mat-progress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>One-Pager</td>
+              <td>Letter</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+            <tr>
+              <td>Email Template</td>
+              <td>600px</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+            <tr>
+              <td>LinkedIn Post</td>
+              <td>1200 &times; 627</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+            <tr>
+              <td>Case Study PDF</td>
+              <td>Letter</td>
+              <td><span class="mat-status mat-not-started">Not Started</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECT COMING SOON ==================== -->
+    <section id="view-project-coming-soon" class="view">
+      <a class="back-link" onclick="navigateTo('projects')">&larr; Back to Projects</a>
+      <div class="view-header"><div><h1>Project Details</h1><p class="subtitle">Campaign detail view</p></div></div>
+      <div class="placeholder-content" style="min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <span style="font-size:64px;margin-bottom:16px">&#128679;</span>
+        <h2 style="color:#0f172a;margin-bottom:8px">Coming Soon</h2>
+        <p style="color:#64748b;font-size:15px">This project&rsquo;s detail page is under construction.</p>
+      </div>
     </section>
 
     <!-- ==================== CITYMAPPER SOCIAL MEDIA EDITOR ==================== -->

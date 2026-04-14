@@ -75,6 +75,9 @@ const breadcrumbs = {
   'remix-templates': 'Remix > Templates',
   'remix-agencies': 'Remix > Agency Manager',
   'projects': 'Projects',
+  'project-waymo': 'Projects > Waymo AV Expansion \u2014 New York',
+  'project-mayor': 'Projects > Mayor Outreach Campaign',
+  'project-coming-soon': 'Projects > Coming Soon',
   'insights': 'Insights',
   'city-generator': 'City Material Generator'
 };
@@ -1013,6 +1016,16 @@ function genReset() {
   const sub = document.getElementById('gen-progress-sub');
   if (sub) sub.textContent = 'AI is creating brand-compliant materials across all selected templates.';
   showGenStep(1);
+}
+
+// --- Projects Tab Switching ---
+function switchProjectsTab(tab) {
+  document.querySelectorAll('.projects-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.projects-tab-content').forEach(c => c.style.display = 'none');
+  const btn = document.querySelector(`.projects-tab[onclick*="'${tab}'"]`);
+  if (btn) btn.classList.add('active');
+  const content = document.getElementById('projects-tab-' + tab);
+  if (content) content.style.display = '';
 }
 
 // --- Init ---
